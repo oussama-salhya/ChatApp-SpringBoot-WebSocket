@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+<!--    <link rel="stylesheet" href="main.css" />-->
+<!--    <link  href="fontawesome-free-6.4.2-web/css/all.min.css" />-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
+
+    <link rel="stylesheet" href="/css/main.css" />
+</head>
+<body>
+
+
+<div class="container">
+    <div class="top">
+        <div class="status-setting dots">
+            <a href="" class="baned dot"></a>
+            <a href="" class="offline dot"></a>
+            <a href="" class="online dot"></a>
+        </div>
+        <div class="chat-name">MYCHATAPP</div>
+        <a class="logOut" href="/logout">LogOut</a>
+    </div>
+    <div class="middle">
+        <div class="dashboard-container" th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''MODERATOR'')')}" >
+            <div class="lines">
+                <div class="line main-line">
+                    <div class="title">
+                        <i class="fa-solid fa-bars"></i>
+                        Dashboard
+                    </div>
+                </div>
+                <div class="line team-line">
+                    <div class="title">
+                        <i class="fa-solid fa-user"></i>
+                        Members
+                    </div>
+                    <!-- <a href=""> <i class="fa-solid fa-xmark"></i> </a> -->
+                </div>
+                <div class="line Person-line">
+                    <div class="title">
+                        <i class="dot offline"></i>
+                        Mouad
+                    </div>
+                    <a href=""> <i class="fa-solid fa-xmark"></i> </a>
+                </div>
+            </div>
+            <div class="line user-line">
+                <div class="title">
+                    <i class="dot status"></i>
+                    Oussama
+                </div>
+                <br />
+            </div>
+        </div>
+
+        <div id="chat-page" class="conversation-container">
+            <div class="chat-container">
+                <div class="connecting">Connecting...</div>
+                <ul id="messageArea">
+                    <li class="chat-message">
+                        <div class="message-head">
+                            <div class="letter">f</div>
+                            <div class="username">Farid</div>
+                        </div>
+                        <p>salam</p>
+                        <div class="time">2023-12-26 15:08</div>
+                    </li>
+                </ul>
+                <form id="messageForm" name="messageForm">
+                    <div class="form-group">
+                        <div class="input-group clearfix">
+                            <input
+                                    type="text"
+                                    id="message"
+                                    placeholder="Type a message..."
+                                    autocomplete="off"
+                                    class="form-control"
+                            />
+                            <button type="submit" class="primary">Send</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}"
+             class="dashboard-moderator">
+            <div class="lines">
+                <div class="line main-line">
+                    <div class="title">
+                        <i class="fa-solid fa-bars"></i>
+                        Admin
+                    </div>
+                </div>
+                <div class="line team-line">
+                    <div class="title">
+                        <i class="fa-solid fa-user"></i>
+                        Moderator
+                    </div>
+                    <!-- <a href=""> <i class="fa-solid fa-xmark"></i> </a> -->
+                </div>
+                <div class="line Person-line">
+                    <div class="title">
+                        <i class="offline dot"></i>
+                        Mouad
+                    </div>
+                    <a href=""> <i class="fa-solid fa-xmark"></i> </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<!--<script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>-->
+
+<script th:src="@{js/script.js}"></script>
+</body>
+</html>
