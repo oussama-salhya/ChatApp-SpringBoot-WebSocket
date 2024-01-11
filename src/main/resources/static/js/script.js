@@ -1,3 +1,5 @@
+
+
 'use strict';
 
 var chatPage = document.querySelector('#chat-page');
@@ -13,6 +15,8 @@ var colors = [
     '#2196F3', '#32c787', '#00BCD4', '#ff5652',
     '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
 ];
+let fetchedOldmsg = false;
+let url = "http://localhost:8088";
 const msgContainer = document.createElement('div');
 msgContainer.classList.add('message-container');
 msgContainer.id = 'message-container';
@@ -24,8 +28,9 @@ let status = null;
 // const csrfToken = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;]*).*$)|^.*$/, '$1');
 // console.log(csrfToken);
 window.addEventListener('DOMContentLoaded', fetchAuth);
+// fetchAuth()
 function fetchAuth() {
-    fetch('http://localhost:8088/api/authentication')
+    fetch(url + '/api/authentication')
         .then(response => response.json())
         .then(authentication => {
             auth = authentication;
@@ -57,14 +62,14 @@ function fetchRole(users) {
 
     testRole = users.filter(user =>user.username===username &&  user.appRoles.find(roleAP => roleAP.role === 'ADMIN'));
     if (testRole.length === 1) {
-            role = 'ROLE_ADMIN';
-            console.log('User has the authority of ADMIN');
-            return;
+        role = 'ROLE_ADMIN';
+        console.log('User has the authority of ADMIN');
+        return;
     }
     testRole = users.filter(user =>user.username===username && user.appRoles.find(roleAP => roleAP.role === 'MODERATOR'));
     if (testRole.length === 1) {
-            role = 'ROLE_MODERATOR';
-            console.log('User has the authority of MOD');
+        role = 'ROLE_MODERATOR';
+        console.log('User has the authority of MOD');
         document.querySelector('.middle').style.gridTemplateColumns = '1fr 2fr';
         document.querySelector('.input-group').style.borderBottomRightRadius = '1rem';
         document.querySelector('#chat-page').style.borderBottomRightRadius = '1rem';
@@ -78,11 +83,13 @@ function fetchRole(users) {
 }
 function connect(event) {
 
-        var socket = new SockJS('/ws');
-        stompClient = Stomp.over(socket);
+    var socket = new SockJS('/ws');
+    stompClient = Stomp.over(socket);
 
 
-        stompClient.connect({}, onConnected, onError);
+    stompClient.connect({}, onConnected, onError);
+
+
 }
 
 
@@ -103,6 +110,7 @@ function onConnected() {
 
     connectingElement.classList.add('hidden');
     fetchUsers();
+
 }
 function onBanNotificationReceived(payload) {
     console.log("sss")
@@ -114,7 +122,7 @@ function onBanNotificationReceived(payload) {
 function fetchOldMessages() {
     // Make an API request to fetch old messages from the server
     // Use a unique endpoint or modify the existing endpoint to retrieve old messages
-    fetch('http://localhost:8088/api/messages')
+    fetch(url +'/api/messages')
         .then(response => response.json())
         .then(oldMessages => {
             // if (oldMessages == null) return;
@@ -124,13 +132,16 @@ function fetchOldMessages() {
                     body: JSON.stringify(message)
                 });
             });
+            fetchedOldmsg = true;
+            console.log(fetchedOldmsg);
+            fetchUsers();
         })
         .catch(error => console.error('Error fetching old messages:', error));
 }
 
 function fetchUsers() {
     // Make an API request to fetch the list of users from the server
-    fetch('http://localhost:8088/api/users')
+    fetch(url + '/api/users')
         .then(response => response.json())
         .then(users => {
             fetchRole(users);
@@ -155,7 +166,7 @@ function fetchUsers() {
             updateUsersList(users.filter(user => user.status === 'online' && user.banned === false),false);
             updateUsersList(users.filter(user => user.status === 'offline' && user.banned === false),false);
             if (role === 'ROLE_ADMIN' || role === 'ROLE_MODERATOR' ) {
-            var newHTML = "</div>" +
+                var newHTML = "</div>" +
                     "<div class=\"line team-line\">\n" +
                     "    <div class=\"title\">\n" +
                     "        <i class=\"fa-solid fa-user\"></i>\n" +
@@ -166,10 +177,10 @@ function fetchUsers() {
 
 // Append without overwriting existing content
                 usersListElement.insertAdjacentHTML('beforeend', newHTML);
-            updateUsersList(users.filter(user => user.banned === true),true);
+                updateUsersList(users.filter(user => user.banned === true),true);
             }
             if (role === 'ROLE_ADMIN'){
-            console.log(users);
+                console.log(users);
                 const dahsbordModerator = document.querySelector('.dashboard-moderator');
                 const usersListElement = dahsbordModerator.querySelector('.lines');
 
@@ -207,7 +218,7 @@ function updateUsersList(users,isBanned) {
     // Assuming you have a DOM element to display the user list
     const usersListElement = document.querySelector('.dashboard-container .lines');
     users.forEach(user => {
-        if (user.username === username || user.appRoles.find(role => role.role === 'ADMIN')) return; // Skip the current user
+        if (user.username === username ) return; // Skip the current user
 
         const userLineElement = document.createElement('div');
         userLineElement.classList.add('line', 'Person-line');
@@ -228,17 +239,19 @@ function updateUsersList(users,isBanned) {
 
         userLineElement.appendChild(titleElement);
 
-        if (role === 'ROLE_ADMIN' && !isBanned && !user.appRoles.find(role => role.role === 'MODERATOR')) {
-        let xMarkLinkElement = document.createElement('a');
-        let xMarkElement = document.createElement('i');
-        xMarkElement.classList.add('fa-solid', 'fa-plus','hover-icon');
+        // if (role === 'ROLE_ADMIN' && !isBanned && !user.appRoles.find(role => role.role === 'MODERATOR')) {
+        if (role === 'ROLE_ADMIN' && !isBanned ) {
+            console.log('admin--------------------------------------')
+            let xMarkLinkElement = document.createElement('a');
+            let xMarkElement = document.createElement('i');
+            xMarkElement.classList.add('fa-solid', 'fa-plus','hover-icon');
             xMarkLinkElement.onmouseenter = () => { showMessage('add Moderator') };
             xMarkLinkElement.onmouseleave = () => { hideMessage() };
-        xMarkLinkElement.appendChild(xMarkElement);
-        userLineElement.appendChild(xMarkLinkElement);
+            xMarkLinkElement.appendChild(xMarkElement);
+            userLineElement.appendChild(xMarkLinkElement);
             xMarkElement.addEventListener('click', (event) => {
                 event.preventDefault();
-                fetch('http://localhost:8088/api/addModerator', {
+                fetch(url + '/api/addModerator', {
                     method: 'PUT',
                     headers: {
                         // 'X-XSRF-TOKEN': csrfToken,
@@ -262,41 +275,42 @@ function updateUsersList(users,isBanned) {
                     .catch(error => console.error('Error banning user:', error));
             });
         }
-        if (role === 'ROLE_ADMIN' || role === 'ROLE_MODERATOR' ) {
+        if (role === 'ROLE_ADMIN' || role === 'ROLE_MODERATOR' && !user.appRoles.find(role => role.role === 'ADMIN') ) {
+            console.log('admin or moderator--------------------------------------')
             let xMarkLinkElement = document.createElement('a');
             // xMarkLinkElement.href = `/deleteModerator/${user.username}`; // Set your actual link here
             let xMarkElement = document.createElement('i');
 
-        xMarkElement.classList.add('fa-solid', mark,'hover-icon');
+            xMarkElement.classList.add('fa-solid', mark,'hover-icon');
 
-        xMarkLinkElement.onmouseenter = () => { showMessage(message) };
-        xMarkLinkElement.onmouseleave = () => { hideMessage() };
-        xMarkLinkElement.appendChild(xMarkElement);
-        userLineElement.appendChild(xMarkLinkElement);
+            xMarkLinkElement.onmouseenter = () => { showMessage(message) };
+            xMarkLinkElement.onmouseleave = () => { hideMessage() };
+            xMarkLinkElement.appendChild(xMarkElement);
+            userLineElement.appendChild(xMarkLinkElement);
 
-        xMarkElement.addEventListener('click', (event) => {
-            event.preventDefault();
-                    fetch('http://localhost:8088/api/' + link, {
-                        method: 'PUT',
-                        headers: {
-                            // 'X-XSRF-TOKEN': csrfToken,
-                            'Content-Type': 'application/json'
-                            // '_csrf': csrfToken
-                            // 'X-CSRF-TOKEN': csrfToken  // Include the CSRF token in the headers
-                        },
-                                body: JSON.stringify({ username: user.username })
+            xMarkElement.addEventListener('click', (event) => {
+                event.preventDefault();
+                fetch(url + '/api/' + link, {
+                    method: 'PUT',
+                    headers: {
+                        // 'X-XSRF-TOKEN': csrfToken,
+                        'Content-Type': 'application/json'
+                        // '_csrf': csrfToken
+                        // 'X-CSRF-TOKEN': csrfToken  // Include the CSRF token in the headers
+                    },
+                    body: JSON.stringify({ username: user.username })
+                })
+                    .then(response =>{
+                        if (response.status === 405)  {window.location.href = './echec';return}
+                        response.text()
+
                     })
-                        .then(response =>{
-                            if (response.status === 405)  {window.location.href = './echec';return}
-                            response.text()
-
-                        })
-                        .then(data =>{
-                            changes(username, link.toUpperCase(), user.username)
-                            fetchUsers(users);
-                        })
-                        .catch(error => console.error('Error banning user:', error));
-        });
+                    .then(data =>{
+                        changes(username, link.toUpperCase(), user.username)
+                        fetchUsers(users);
+                    })
+                    .catch(error => console.error('Error banning user:', error));
+            });
         }
         usersListElement.appendChild(userLineElement);
     });
@@ -340,7 +354,7 @@ function updateModeratorList(users) {
         usersListElement.appendChild(userLineElement);
         xMarkElement.addEventListener('click', (event) => {
             event.preventDefault();
-            fetch('http://localhost:8088/api/deleteModerator', {
+            fetch(url + '/api/deleteModerator', {
                 method: 'PUT',
                 headers: {
                     // 'X-XSRF-TOKEN': csrfToken,
@@ -352,7 +366,7 @@ function updateModeratorList(users) {
             })
                 .then(response =>{
                     if (response.status === 405)  {window.location.href = './echec';return}
-                 response.text();})
+                    response.text();})
                 .then(data =>{
                     changes(username, 'UNMOD', user.username)
                     fetchUsers();
@@ -373,26 +387,26 @@ function sendMessage(event,isAction,user,action,actionedUser) {
     console.log(action)
     if (isAction) {
 
-            var chatMessage = {
-                sender: username,
-                content: actionedUser,
-                type: action
-            };
-    console.log(chatMessage)
-            stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
-
-    }else{
-    var messageContent = messageInput.value.trim();
-    if(messageContent && stompClient) {
         var chatMessage = {
             sender: username,
-            content: messageInput.value,
-            type: 'CHAT'
+            content: actionedUser,
+            type: action
         };
+        console.log(chatMessage)
         stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
-        messageInput.value = '';
-    }
-    event.preventDefault();
+
+    }else{
+        var messageContent = messageInput.value.trim();
+        if(messageContent && stompClient) {
+            var chatMessage = {
+                sender: username,
+                content: messageInput.value,
+                type: 'CHAT'
+            };
+            stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
+            messageInput.value = '';
+        }
+        event.preventDefault();
     }
 }
 function changes(user,action,actionedUser) {
@@ -410,10 +424,10 @@ function onMessageReceived(payload,messageDB) {
     }else{
         message = JSON.parse(payload.body);
     }
-
+    console.log(fetchedOldmsg)
     var messageElement = document.createElement('li');
     if (message.type ==='MOD'){
-        fetchUsers();
+        if (fetchedOldmsg) fetchUsers();
         messageElement.classList.add('event-message');
         message.content = message.content + ' Become a Moderator! at ' + getDate(message.date) + ' by ' + message.sender;
         var textElement = document.createElement('p');
@@ -424,7 +438,7 @@ function onMessageReceived(payload,messageDB) {
 
         messageArea.appendChild(messageElement);
     }else if (message.type ==='UNMOD'){
-        fetchUsers();
+        if (fetchedOldmsg) fetchUsers();
         messageElement.classList.add('event-message');
         message.content = message.content + ' deleted from Moderators! at ' + getDate(message.date) + ' by ' + message.sender;
         var textElement = document.createElement('p');
@@ -435,7 +449,7 @@ function onMessageReceived(payload,messageDB) {
 
         messageArea.appendChild(messageElement);
     }else if (message.type ==='UNBAN'){
-        fetchUsers();
+        if (fetchedOldmsg) fetchUsers();
 
         messageElement.classList.add('event-message');
         message.content = message.content + ' Unbanned! at ' + getDate(message.date) + ' by ' + message.sender;
@@ -447,7 +461,7 @@ function onMessageReceived(payload,messageDB) {
 
         messageArea.appendChild(messageElement);
     }else if (message.type ==='BAN'){
-        fetchUsers();
+        if (fetchedOldmsg) fetchUsers();
 
         messageElement.classList.add('event-message');
         message.content = message.content + ' Banned! at ' + getDate(message.date) + ' by ' + message.sender;
@@ -459,7 +473,7 @@ function onMessageReceived(payload,messageDB) {
 
         messageArea.appendChild(messageElement);
     }else if(message.type === 'JOIN') {
-        fetchUsers();
+        if (fetchedOldmsg) fetchUsers();
         messageElement.classList.add('event-message');
         message.content = message.sender + ' joined! at ' + getDate(message.date);
         var textElement = document.createElement('p');
@@ -471,7 +485,7 @@ function onMessageReceived(payload,messageDB) {
         messageArea.appendChild(messageElement);
 
     } else if (message.type === 'LEAVE') {
-        fetchUsers();
+        if (fetchedOldmsg) fetchUsers();
         messageElement.classList.add('event-message');
         message.content = message.sender + ' left! at ' + getDate(message.date);
         var textElement = document.createElement('p');
@@ -566,3 +580,6 @@ function hideMessage() {
     const messageContainer = document.getElementById('message-container');
     messageContainer.style.display = 'none';
 }
+// document.querySelector(".loader").style.display = "none";
+
+
