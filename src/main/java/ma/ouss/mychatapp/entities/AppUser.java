@@ -25,9 +25,10 @@ public class AppUser {
     private String firstName;
     private String lastName;
     private Date lastConnectonDate ;
-    Boolean Baned = false;
+    Boolean banned = false;
     public AppUser(String username) {
         this.username = username;
+         banned = false;
     }
 
     @OneToMany(mappedBy = "sender",fetch = FetchType.EAGER)

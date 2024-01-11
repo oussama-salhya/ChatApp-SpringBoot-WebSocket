@@ -30,6 +30,7 @@ public class AccountServiceImpl implements AccountService {
                 .password(passwordEncoder.encode(password))
                 .email(email)
                 .lastConnectonDate(new Date())
+                .banned(false)
                 .build();
         appUserRepository.save(appUser);
         return appUser;
@@ -65,6 +66,11 @@ public class AccountServiceImpl implements AccountService {
     public AppUser loadUserByUsername(String username) {
         return appUserRepository.findByUsername(username);
 
+    }
+
+    @Override
+    public void saveUser(AppUser user) {
+        appUserRepository.save(user);
     }
 //    on peut ajouter d'autres méthodes par exemple pour verifier ou valider email, activer compte, etc.
 }

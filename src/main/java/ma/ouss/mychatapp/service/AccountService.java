@@ -9,6 +9,7 @@ public interface AccountService {
     void addRoleToUser(String username, String role);
     void removeRoleFromUser(String username, String role);
     AppUser loadUserByUsername(String username);
+    void saveUser(AppUser user);
 
 
 }

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MYCHATAPP</title>
+    <link rel="icon" type="image/png" th:href="@{/img/chat.png}">
+
+    <!--    <link rel="stylesheet" href="main.css" />-->
+<!--    <link  href="fontawesome-free-6.4.2-web/css/all.min.css" />-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
+
+    <link rel="stylesheet" href="/css/login.css" />
+</head>
+<section class="authentification">
+    <div class="content-box">
+        <div class="form-box">
+            <h2 class="login-title">Login</h2>
+
+            <br /><br />
+            <div class="border-line"><span class="center-text"></span></div>
+            <br />
+            <form th:action="@{/login}" method="post">
+                <div class="input-box">
+                    <label for="email">Username</label
+                    ><input
+                        class="btn transparentInDark"
+                        id="email"
+                        name="username"
+                        value=""
+                />
+                </div>
+                <div class="input-box">
+                    <label for="password">password</label
+                    ><input
+                        type="password"
+                        class="btn transparentInDark"
+                        id="password"
+                        name="password"
+                        value=""
+                />
+                </div>
+                <div class="input-box sign-up">
+                    <button type="submit" class="btn btn-sign-up">login</button>
+                </div>
+<!--                <div class="input-box account">-->
+<!--                    <p>-->
+<!--                        Don't have an account? <a href="/register"> Sign Up</a>-->
+<!--                    </p>-->
+<!--                </div>-->
+            </form>
+        </div>
+    </div>
+    <div class="img-box">
+        <img th:src="@{/img/Workchat-bro.svg}" alt="HHHHHHHHH"/>
+<!--        <div class="text-content">-->
+<!--            <div class="text-header">-->
+<!--                <h2>-->
+<!--                    exploring the best community for your projects realisation-->
+<!--                </h2>-->
+<!--            </div>-->
+<!--            <div class="text-paragraph">-->
+<!--                <p>-->
+<!--                    Lorem ipsum dolor sit amet consectetur adipisicing elit.-->
+<!--                    Praesentium incidunt architecto inventore illo fuga? Nisi-->
+<!--                    est nemo quod repellat distinctio.-->
+<!--                </p>-->
+<!--            </div>-->
+<!--        </div>-->
+    </div>
+</section>
+
+</html>

@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>CHATOUUS</title>
+<!--    favicon-->
+    <link rel="icon" type="image/png" th:href="@{/img/chat.png}">
 <!--    <link rel="stylesheet" href="main.css" />-->
 <!--    <link  href="fontawesome-free-6.4.2-web/css/all.min.css" />-->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
@@ -20,11 +22,11 @@
             <a href="" class="offline dot"></a>
             <a href="" class="online dot"></a>
         </div>
-        <div class="chat-name">MYCHATAPP</div>
+        <div class="chat-name">CHATOUUS</div>
         <a class="logOut" href="/logout">LogOut</a>
     </div>
     <div class="middle">
-        <div class="dashboard-container" th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''MODERATOR'')')}" >
+        <div class="dashboard-container" >
             <div class="lines">
                 <div class="line main-line">
                     <div class="title">
@@ -39,13 +41,13 @@
                     </div>
                     <!-- <a href=""> <i class="fa-solid fa-xmark"></i> </a> -->
                 </div>
-                <div class="line Person-line">
-                    <div class="title">
-                        <i class="dot offline"></i>
-                        Mouad
-                    </div>
-                    <a href=""> <i class="fa-solid fa-xmark"></i> </a>
-                </div>
+<!--                <div class="line Person-line">-->
+<!--                    <div class="title">-->
+<!--                        <i class="dot offline"></i>-->
+<!--                        Mouad-->
+<!--                    </div>-->
+<!--                    <a href=""> <i class="fa-solid fa-xmark"></i> </a>-->
+<!--                </div>-->
             </div>
             <div class="line user-line">
                 <div class="title">
@@ -60,14 +62,14 @@
             <div class="chat-container">
                 <div class="connecting">Connecting...</div>
                 <ul id="messageArea">
-                    <li class="chat-message">
-                        <div class="message-head">
-                            <div class="letter">f</div>
-                            <div class="username">Farid</div>
-                        </div>
-                        <p>salam</p>
-                        <div class="time">2023-12-26 15:08</div>
-                    </li>
+<!--                    <li class="chat-message">-->
+<!--                        <div class="message-head">-->
+<!--                            <div class="letter">f</div>-->
+<!--                            <div class="username">Farid</div>-->
+<!--                        </div>-->
+<!--                        <p>salam</p>-->
+<!--                        <div class="time">2023-12-26 15:08</div>-->
+<!--                    </li>-->
                 </ul>
                 <form id="messageForm" name="messageForm">
                     <div class="form-group">
@@ -100,13 +102,6 @@
                         Moderator
                     </div>
                     <!-- <a href=""> <i class="fa-solid fa-xmark"></i> </a> -->
-                </div>
-                <div class="line Person-line">
-                    <div class="title">
-                        <i class="offline dot"></i>
-                        Mouad
-                    </div>
-                    <a href=""> <i class="fa-solid fa-xmark"></i> </a>
                 </div>
             </div>
         </div>

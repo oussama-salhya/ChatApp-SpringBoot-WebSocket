@@ -2,7 +2,6 @@ package ma.ouss.mychatapp.chat;
 
 import ma.ouss.mychatapp.dao.AppUserRepository;
 import ma.ouss.mychatapp.dao.ChatMessageRepository;
-import ma.ouss.mychatapp.dao.LogRepository;
 import ma.ouss.mychatapp.dto.ChatMessageDto;
 import ma.ouss.mychatapp.entities.AppUser;
 import ma.ouss.mychatapp.entities.ChatMessage;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.Date;
-import java.util.List;
 
 @Controller
 public class ChatController {
@@ -27,15 +25,29 @@ public class ChatController {
     @Autowired
     private ma.ouss.mychatapp.dao.LogRepository LogRepository;
 
+
+
+
     @MessageMapping("/chat.sendMessage")
     @SendTo("/topic/public")
     public ChatMessageDto sendMessage(
             @Payload ChatMessageDto chatMessageDto
     ) {
+        MessageType type = MessageType.CHAT;
+//        if (chatMessageDto.getType().equals("BAN")){
+//            type = MessageType.BAN;
+//        }
+        for (MessageType messageType : MessageType.values()
+             ) {
+            if (chatMessageDto.getType().equals(messageType.toString())){
+                type = messageType;
+                System.out.println(type);
+            }
+        }
         Date date = new Date();
         AppUser user = appUserRepository.findByUsername(chatMessageDto.getSender());
         Log log =Log.builder()
-                .type(MessageType.CHAT)
+                .type(type)
                 .sender(user)
                 .build();
         LogRepository.save(log);
@@ -80,5 +92,25 @@ public class ChatController {
         headerAccessor.getSessionAttributes().put("username", chatMessageDto.getSender());
         chatMessageDto.setDate(date);
         return chatMessageDto;
+    }
+    @MessageMapping("/chat.changes")
+    @SendTo("/topic/changes")
+    public ChatMessageDto changes(
+            @Payload ChatMessageDto chatMessageDto,
+            SimpMessageHeaderAccessor headerAccessor
+    ) {
+        return chatMessageDto;
+    }
+    @GetMapping("/echec")
+    public String echec() {
+        return "Security/echec";
+    }
+    @GetMapping("/login")
+    public String login() {
+        return "/login";
+    }
+    @GetMapping("/index")
+    public String indexx() {
+        return "/index";
     }
 }

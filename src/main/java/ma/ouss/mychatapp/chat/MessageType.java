@@ -4,5 +4,9 @@ public enum MessageType {
 
     CHAT,
     JOIN,
-    LEAVE
+    LEAVE,
+    BAN,
+    UNBAN,
+    MOD,
+    UNMOD,
 }

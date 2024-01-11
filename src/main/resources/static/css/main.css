@@ -41,7 +41,7 @@ body {
   box-shadow: var(--dark-shadow);
   /* width: 60vw; */
   width: 90vw;
-  max-height: 35rem;
+  max-height: 90vh;
   margin: 3rem auto;
   /* background: green; */
   border-radius: var(--radius);
@@ -82,6 +82,7 @@ body {
   border-radius: 0 0 0 var(--radius);
   background: var(--dashBackground);
   color: var(--dashColor);
+  max-height: 90vh;
 }
 .conversation-container {
   background: var(--whiteColor);
@@ -91,6 +92,7 @@ body {
   color: var(--dashBackground);
   border-radius: 0 0 var(--radius) 0;
   background: var(--dashColor);
+  max-height: 90vh;
 }
 
 .dashboard-container {
@@ -130,7 +132,6 @@ body {
 }
 .line.user-line .dot {
   display: inline-block;
-  background: var(--onligneColor);
 }
 .line {
   transition: var(--transition);
@@ -138,6 +139,7 @@ body {
 .line:hover {
   color: var(--whiteColor);
   background: rgba(207, 218, 225, 0.3);
+  border-bottom-left-radius: var(--radius);
 }
 .line.Person-line .dot {
   display: inline-block;
@@ -215,8 +217,8 @@ button.primary {
   background: var(--onligneColor);
 }
 .lines {
-  max-height: 42rem; /* Set the maximum height you want for the message area */
-  overflow-y: auto;
+  /*max-height: 32rem; !* Set the maximum height you want for the message area *!*/
+  /*overflow-y: auto;*/
 }
 li {
   list-style: none;
@@ -278,10 +280,95 @@ li {
 .dashboard-moderator .line{
   border-bottom: 1px solid rgba(107, 118, 125, 0.5);
 }
-
-
+.dashboard-moderator .lines{
+  /*min-height: 500px;*/
+  /*max-height: 500px;*/
+  max-height: 70vh;
+  overflow: auto;
+}
+.dashboard-container .lines {
+  /*min-height: 500px;*/
+  max-height: 70vh;
+  overflow: auto;
+}
 #messageArea {
-  max-height: 30.5rem;
+  /*max-height: 30.5rem;*/
+  max-height: 70vh;
   /* min-height: 2250px; */
   overflow-y: auto;
 }
+.middle {
+  /*overflow: auto;*/
+}
+.message-container {
+  display: none;
+  position: absolute;
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.hover-icon {
+  font-size: 24px; /* Adjust the size as needed */
+  cursor: pointer;
+}
+
+/* For WebKit browsers (e.g., Chrome, Safari) */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+
+.dashboard-container .lines::-webkit-scrollbar-thumb {
+  background-color: var(--backgroundColor); /* Change the color of the scrollbar thumb */
+  border-radius: 6px;
+}
+
+.dashboard-container .lines ::-webkit-scrollbar-track {
+  background-color: var(--dashBackground); /* Change the color of the scrollbar track */
+}
+#messageArea::-webkit-scrollbar-thumb {
+  background-color: var(--backgroundColor); /* Change the color of the scrollbar thumb */
+  border-radius: 6px;
+}
+
+#messageArea::-webkit-scrollbar-track {
+  background-color: var(--whiteColor); /* Change the color of the scrollbar track */
+}
+.dashboard-moderator .lines::-webkit-scrollbar-thumb {
+  background-color: var(--backgroundColor); /* Change the color of the scrollbar thumb */
+  border-radius: 6px;
+}
+
+.dashboard-moderator .lines::-webkit-scrollbar-track {
+  background-color: var(--dashColor); /* Change the color of the scrollbar track */
+}
+
+/* For Firefox */
+/* Note: Firefox has limited support for scrollbar customization */
+/* You may need to enable custom scrollbars in about:config by setting "layout.css.scrollbar-color.enabled" to true */
+/* Also, Firefox only supports one color for both thumb and track */
+
+/* scrollbar-color: thumb color track color; */
+/* scrollbar-width: thin | auto; */
+
+/* Example: */
+/* scrollbar-color: #4CAF50 #f1f1f1; */
+/* scrollbar-width: thin; */
+
+/* For Microsoft Edge and IE */
+/* Note: Microsoft Edge and IE have limited support for scrollbar customization */
+
+/* For Edge */
+/* scrollbar-color: thumb color track color; */
+/* Example: */
+/* scrollbar-color: #4CAF50 #f1f1f1; */
+
+/* For IE */
+/* scrollbar-face-color: thumb color; */
+/* scrollbar-track-color: track color; */
+/* Example: */
+/* scrollbar-face-color: #4CAF50; */
+/* scrollbar-track-color: #f1f1f1; */

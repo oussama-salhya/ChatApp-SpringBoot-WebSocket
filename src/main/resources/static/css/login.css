@@ -1,0 +1,307 @@
+@import url("https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&display=swap");
+
+:root {
+  --black: black;
+  --white: white;
+  --beige: rgb(204, 167, 127);
+  --borderColor: rgba(230, 225, 230, 0.7);
+  --chocolate: rgb(192, 105, 43);
+  --grey: #abb4be;
+  --darkGrey: #1d2127;
+  --pink: rgb(228, 124, 214);
+  --font: "Rubik", "sans-serif";
+  --transition: all 0.3s linear;
+}
+
+body.black {
+  --black: white;
+  --white: black;
+}
+
+body {
+  background: #0d0f12;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: var(--font);
+}
+
+section.authentification {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  background: var(--white);
+}
+
+section.authentification .img-box {
+  position: relative;
+  width: 50%;
+  height: 100%;
+}
+
+section.authentification .img-box img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 40px;
+  transform: scale(0.95);
+  margin-right: 5px;
+}
+
+section.authentification .img-box .text-content {
+  position: absolute;
+  top: 82%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--white);
+  text-align: center;
+  min-width: 55%;
+  margin: 0 auto;
+}
+
+section.authentification .text-content .text-paragraph p {
+  padding-top: 20px;
+  min-width: 75%;
+}
+
+section.authentification .text-content .text-content {
+  margin-bottom: 100px;
+}
+
+section.authentification .text-header h2 {
+  font-weight: 200;
+  text-transform: capitalize;
+  color: var(--white);
+  text-shadow: 12px -10px 20px black;
+  text-align: center;
+}
+
+section.authentification .text-paragraph p {
+  font-weight: 100;
+  font-size: 14px;
+  text-transform: capitalize;
+  color: var(--white);
+}
+
+section.authentification .content-box {
+  display: flex;
+  width: 50%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+section.authentification .content-box .form-box h1 {
+  font-weight: 500;
+  margin-bottom: 25px;
+  letter-spacing: 1px;
+  text-align: center;
+  color: var(--black);
+  text-transform: capitalize;
+}
+
+section.authentification .content-box .form-box {
+  width: 50%;
+}
+
+@media screen and (min-width: 1200px) {
+  section.authentification .content-box .form-box h1 {
+    font-size: 2rem;
+  }
+}
+
+section.authentification .transparentInDark {
+  background: transparent;
+}
+
+section.authentification .content-box .form-box .input-box {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: var(--black);
+  outline: none;
+  /*border: 1px solid var(--bl);*/
+  /* background: transparent; */
+}
+
+section.authentification .content-box .form-box .input-box input {
+  transition: all 0.2s linear;
+}
+
+section.authentification .content-box .form-box .input-box input:focus {
+  border: 1px solid var(--black);
+}
+
+section.authentification .content-box .form-box .input-box .no-outline {
+  outline: none;
+}
+
+section.authentification .content-box .form-box .input-box label {
+  display: inline-block;
+  text-transform: capitalize;
+  letter-spacing: 1px;
+  padding-bottom: 3px;
+  /* background: transparent; */
+}
+
+section.authentification .content-box .form-box .input-box .star-sign {
+  color: var(--pink);
+}
+
+section.authentification .btn {
+  width: 100%;
+  padding: 10px 15px;
+  font-weight: 400;
+  font-size: 15px;
+  letter-spacing: 1px;
+  border-radius: 30px;
+  border: 1px solid;
+  border-color: var(--borderColor);
+}
+
+section.authentification ::placeholder {
+  font-family: "Times New Roman", Times, serif;
+  letter-spacing: 1.2px;
+  opacity: 0.7;
+}
+
+section.authentification .agreement {
+  padding-top: 5px;
+  padding-bottom: 12px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: capitalize;
+  color: var(--black);
+}
+
+section.authentification .input-box .btn-sign-up {
+  background: var(--black);
+  color: var(--white);
+  text-transform: capitalize;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: var(--transition);
+}
+
+section.authentification .input-box .btn-sign-up:hover {
+  background: var(--white);
+  color: var(--black);
+}
+
+section.authentification .input-box p {
+  font-size: 14px;
+}
+
+section.authentification .input-box p a {
+  font-size: 15px;
+  text-decoration: none;
+  color: var(--chocolate);
+}
+
+section.authentification .input-box p a:hover {
+  text-decoration: underline;
+}
+
+section.authentification .google-login {
+  background: var(--white);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  color: var(--black);
+  padding: 10px 15px;
+  font-weight: 400;
+  font-size: 15px;
+  letter-spacing: 1px;
+  border-radius: 30px;
+  border: 1px solid var(--borderColor);
+  border-radius: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+section.authentification .google-login img {
+  width: 20px;
+  padding-right: 7px;
+  display: flex;
+}
+
+section.authentification .google-login p {
+  font-weight: 500;
+  font-size: 13px;
+}
+
+section.authentification .google-login:hover {
+  background: var(--black);
+  color: var(--white);
+}
+
+section.authentification .border-line {
+  position: relative;
+  width: 100%;
+  height: 1px;
+  background-color: var(--borderColor);
+  color: var(--borderColor);
+  font-weight: 400;
+}
+
+section.authentification .center-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--white);
+  padding: 0 10px;
+  color: var(--grey);
+}
+
+section.authentification .input-box input {
+  max-width: 60ch;
+}
+
+section.authentification .password-forgotten {
+  padding-top: 3px;
+  text-align: end;
+}
+
+section.authentification .password-forgotten a {
+  font-weight: 100;
+  text-decoration: none;
+  font-size: 12px;
+  color: var(--chocolate);
+  transition: var(--transition);
+}
+
+section.authentification .password-forgotten a:hover {
+  text-decoration: underline;
+}
+
+@media screen and (min-width: 0px) {
+  section.authentification .img-box {
+    /* display: none; */
+  }
+
+  section.authentification .content-box {
+    flex: 0 0 100%;
+  }
+}
+
+@media screen and (min-width: 512px) {
+  section.authentification .img-box {
+    display: initial;
+  }
+
+  section.authentification .content-box {
+    flex: 0 0 50%;
+  }
+}
+.login-title{
+  text-align: center;
+}

@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ma.ouss.mychatapp.entities.AppRole;
 
 import java.util.Date;
+import java.util.List;
 
 
 @NoArgsConstructor
@@ -21,8 +23,9 @@ public class AppUserDto {
     private String lastName;
     private Date lastConnectonDate ;
     private String status;
-
-    public AppUserDto(String username, String password, String email, String firstName, String lastName, Date lastConnectonDate) {
+    private Boolean banned = false;
+    private List<AppRole> appRoles ;
+    public AppUserDto(String username, String password, String email, String firstName, String lastName, Date lastConnectonDate,Boolean banned) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -34,7 +37,7 @@ public class AppUserDto {
         } else {
             this.status = "offline";
         }
-
+        this.banned = banned;
     }
 
 }
