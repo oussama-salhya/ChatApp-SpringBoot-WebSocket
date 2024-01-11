@@ -1,167 +1,118 @@
 package ma.ouss.mychatapp.chat;
 
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.AllArgsConstructor;
 import ma.ouss.mychatapp.dao.AppUserRepository;
 import ma.ouss.mychatapp.dao.ChatMessageRepository;
-import ma.ouss.mychatapp.dto.AppUserDto;
 import ma.ouss.mychatapp.dto.ChatMessageDto;
 import ma.ouss.mychatapp.entities.AppUser;
 import ma.ouss.mychatapp.entities.ChatMessage;
-import ma.ouss.mychatapp.service.AccountService;
+import ma.ouss.mychatapp.entities.Log;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.web.server.csrf.CsrfToken;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 
-
-@RestController
-@AllArgsConstructor
-@CrossOrigin(origins = "http://localhost:8088")
-public class AppController {
+@Controller
+public class ChatController {
+    @Autowired
     private ChatMessageRepository chatMessageRepository;
+    @Autowired
     private AppUserRepository appUserRepository;
-    private AccountService accountService;
-    private SimpMessagingTemplate messagingTemplate;
-//    @PreAuthorize("hasRole('ROLE_MODERATOR')")
-    @PutMapping("/api/ban") // Using PUT for banning as it's more appropriate
-    public ResponseEntity<String> ban(@RequestBody AppUser userToBan) {
-            if (userToBan == null) {
-                return ResponseEntity.badRequest().body("User is required");
-            }
-            String username = userToBan.getUsername();
-            if (username == null || username.isEmpty()) {
-                return ResponseEntity.badRequest().body("Username is required");
-            }
-            AppUser user = accountService.loadUserByUsername(username);
-            if (user == null) {
-                return ResponseEntity.badRequest().body("Username not exists");
-            }
+    @Autowired
+    private ma.ouss.mychatapp.dao.LogRepository LogRepository;
 
-            user.setBanned(true);
-            try {
-            accountService.removeRoleFromUser(user.getUsername(), "MODERATOR");
-            } catch (RuntimeException e) {
-                System.out.println("User is not Moderator");
-            }
-            accountService.saveUser(user);
 
-        return ResponseEntity.ok("User banned successfully");
-    }
-//@PreAuthorize("hasRole('ROLE_MODERATOR')")
-@PutMapping("/api/unban") // Using PUT for banning as it's more appropriate
-    public ResponseEntity<String> unban(@RequestBody AppUser userToBan) {
-            if (userToBan == null) {
-                return ResponseEntity.badRequest().body("User is required");
-            }
-            String username = userToBan.getUsername();
-            if (username == null || username.isEmpty()) {
-                return ResponseEntity.badRequest().body("Username is required");
-            }
-            AppUser user = accountService.loadUserByUsername(username);
-            if (user == null) {
-                return ResponseEntity.badRequest().body("Username not exists");
-            }
 
-            user.setBanned(false);
-            accountService.saveUser(user);
+    @CrossOrigin(origins = "http://localhost:8088")
 
-            return ResponseEntity.ok("User banned successfully");
-    }
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PutMapping("/api/addModerator") // Using PUT for banning as it's more appropriate
-    public ResponseEntity<String> addModerator(@RequestBody AppUser userToBeMod) {
-            if (userToBeMod == null) {
-                return ResponseEntity.badRequest().body("User is required");
+    @MessageMapping("/chat.sendMessage")
+    @SendTo("/topic/public")
+    public ChatMessageDto sendMessage(
+            @Payload ChatMessageDto chatMessageDto
+    ) {
+        MessageType type = MessageType.CHAT;
+//        if (chatMessageDto.getType().equals("BAN")){
+//            type = MessageType.BAN;
+//        }
+        for (MessageType messageType : MessageType.values()
+             ) {
+            if (chatMessageDto.getType().equals(messageType.toString())){
+                type = messageType;
+                System.out.println(type);
             }
-            String username = userToBeMod.getUsername();
-            if (username == null || username.isEmpty()) {
-                return ResponseEntity.badRequest().body("Username is required");
-            }
-            AppUser user = accountService.loadUserByUsername(username);
-            if (user == null) {
-                return ResponseEntity.badRequest().body("Username not exists");
-            }
-            accountService.addRoleToUser(user.getUsername(), "MODERATOR");
-            accountService.saveUser(user);
-//            // Get the current authentication
-//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//
-//            // Modify the roles as needed
-//            // For example, remove the "MODERATOR" role
-//            authentication.getAuthorities().removeIf(authority -> authority.getAuthority().equals("ROLE_MODERATOR"));
-//
-//            // Update the authentication in the security context
-//            SecurityContextHolder.getContext().setAuthentication(authentication);
-            return ResponseEntity.ok("Moderator added successfully");
-    }
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PutMapping("/api/deleteModerator") // Using PUT for banning as it's more appropriate
-    public ResponseEntity<String> deleteModerator(@RequestBody AppUser userToBeMod) {
-            if (userToBeMod == null) {
-                return ResponseEntity.badRequest().body("User is required");
-            }
-            String username = userToBeMod.getUsername();
-            if (username == null || username.isEmpty()) {
-                return ResponseEntity.badRequest().body("Username is required");
-            }
-            AppUser user = accountService.loadUserByUsername(username);
-            if (user == null) {
-                return ResponseEntity.badRequest().body("Username not exists");
-            }
-            accountService.removeRoleFromUser(user.getUsername(), "MODERATOR");
-            accountService.saveUser(user);
-            return ResponseEntity.ok("Moderator deleted successfully");
-    }
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping("/api/messages")
-    public ResponseEntity<List<ChatMessageDto>> getOldMessages() {
-        List<ChatMessage> oldMessages = chatMessageRepository.findAll();
-        if (oldMessages.isEmpty()) return ResponseEntity.ok(null);
-        // Adjust the query as needed
-        List<ChatMessageDto> oldMessagesDto = new ArrayList<>();
-        for (ChatMessage oldMessage : oldMessages) {
-            oldMessagesDto.add(ChatMessageDto.builder()
-                    .content(oldMessage.getContent())
-                    .sender(oldMessage.getSender().getUsername())
-                    .date(oldMessage.getDate())
-                    .type(oldMessage.getLog().getType().toString())
-                    .build());
         }
-        if (oldMessagesDto.isEmpty()) return ResponseEntity.ok(null);
-        return ResponseEntity.ok(oldMessagesDto);
+        Date date = new Date();
+        AppUser user = appUserRepository.findByUsername(chatMessageDto.getSender());
+        Log log =Log.builder()
+                .type(type)
+                .sender(user)
+                .build();
+        LogRepository.save(log);
+        ChatMessage chatMessage = ChatMessage.builder()
+                .content(chatMessageDto.getContent())
+                .date(date)
+                .sender(user)
+                .log(log)
+                .build();
+        chatMessageRepository.save(chatMessage);
+        user.setLastConnectonDate(null);
+        user.getChatMessages().add(chatMessage);
+        appUserRepository.save(user);
+        chatMessageDto.setDate(new java.util.Date());
+        return chatMessageDto;
     }
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping("/api/users")
-    @ResponseBody
-    public ResponseEntity<List<AppUserDto>> getUsers() {
-        // Fetch the list of users from your repository or service
-        List<AppUser> users = appUserRepository.findAll();
-        if (users.isEmpty()) return ResponseEntity.ok(null);
-        List<AppUserDto> usersDto = new ArrayList<>();
-        for (AppUser user : users) {
-            usersDto.add(AppUserDto.builder()
-                    .username(user.getUsername())
-                    .banned(user.getBanned())
-                    .status(user.getLastConnectonDate() == null ? "online" : "offline")
-                    .appRoles(user.getAppRoles())
-                    .build());
-        }
-        return ResponseEntity.ok(usersDto);
+
+    @MessageMapping("/chat.addUser")
+    @SendTo("/topic/public")
+    public ChatMessageDto addUser(
+            @Payload ChatMessageDto chatMessageDto,
+            SimpMessageHeaderAccessor headerAccessor
+    ) {
+        Date date = new Date();
+        AppUser user = appUserRepository.findByUsername(chatMessageDto.getSender());
+        Log log =Log.builder()
+                .type(MessageType.JOIN)
+                .sender(user)
+                .build();
+        LogRepository.save(log);
+        ChatMessage chatMessage = ChatMessage.builder()
+                .content("user connected")
+                .date(null)
+                .sender(user)
+                .log(log)
+                .build();
+        chatMessageRepository.save(chatMessage);
+        user.setLastConnectonDate(null);
+        user.getChatMessages().add(chatMessage);
+        appUserRepository.save(user);
+        // Add username in web socket session
+        headerAccessor.getSessionAttributes().put("username", chatMessageDto.getSender());
+        chatMessageDto.setDate(date);
+        return chatMessageDto;
     }
-
-
-
+    @MessageMapping("/chat.changes")
+    @SendTo("/topic/changes")
+    public ChatMessageDto changes(
+            @Payload ChatMessageDto chatMessageDto,
+            SimpMessageHeaderAccessor headerAccessor
+    ) {
+        return chatMessageDto;
+    }
+    @GetMapping("/echec")
+    public String echec() {
+        return "Security/echec";
+    }
+    @GetMapping("/login")
+    public String login() {
+        return "/login";
+    }
+    @GetMapping("/index")
+    public String indexx() {
+        return "/index";
+    }
 }
-
-
