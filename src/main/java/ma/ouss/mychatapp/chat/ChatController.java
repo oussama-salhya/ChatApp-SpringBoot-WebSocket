@@ -40,7 +40,7 @@ public class ChatController {
 //            type = MessageType.BAN;
 //        }
         for (MessageType messageType : MessageType.values()
-             ) {
+        ) {
             if (chatMessageDto.getType().equals(messageType.toString())){
                 type = messageType;
                 System.out.println(type);
