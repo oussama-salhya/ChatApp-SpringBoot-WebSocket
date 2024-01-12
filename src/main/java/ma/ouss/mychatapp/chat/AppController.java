@@ -27,7 +27,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@CrossOrigin(origins = "http://localhost:8088")
+//@CrossOrigin(origins = "http://localhost:8088")
 public class AppController {
     private ChatMessageRepository chatMessageRepository;
     private AppUserRepository appUserRepository;

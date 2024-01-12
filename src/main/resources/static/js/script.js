@@ -16,7 +16,7 @@ var colors = [
     '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
 ];
 let fetchedOldmsg = false;
-let url = "http://localhost:8088";
+// let url = "http://localhost:8088";
 const msgContainer = document.createElement('div');
 msgContainer.classList.add('message-container');
 msgContainer.id = 'message-container';
@@ -30,7 +30,7 @@ let status = null;
 window.addEventListener('DOMContentLoaded', fetchAuth);
 // fetchAuth()
 function fetchAuth() {
-    fetch(url + '/api/authentication')
+    fetch(    '/api/authentication')
         .then(response => response.json())
         .then(authentication => {
             auth = authentication;
@@ -122,7 +122,7 @@ function onBanNotificationReceived(payload) {
 function fetchOldMessages() {
     // Make an API request to fetch old messages from the server
     // Use a unique endpoint or modify the existing endpoint to retrieve old messages
-    fetch(url +'/api/messages')
+    fetch('/api/messages')
         .then(response => response.json())
         .then(oldMessages => {
             // if (oldMessages == null) return;
@@ -141,7 +141,7 @@ function fetchOldMessages() {
 
 function fetchUsers() {
     // Make an API request to fetch the list of users from the server
-    fetch(url + '/api/users')
+    fetch(  '/api/users')
         .then(response => response.json())
         .then(users => {
             fetchRole(users);
@@ -251,7 +251,7 @@ function updateUsersList(users,isBanned) {
             userLineElement.appendChild(xMarkLinkElement);
             xMarkElement.addEventListener('click', (event) => {
                 event.preventDefault();
-                fetch(url + '/api/addModerator', {
+                fetch(  '/api/addModerator', {
                     method: 'PUT',
                     headers: {
                         // 'X-XSRF-TOKEN': csrfToken,
@@ -290,7 +290,7 @@ function updateUsersList(users,isBanned) {
 
             xMarkElement.addEventListener('click', (event) => {
                 event.preventDefault();
-                fetch(url + '/api/' + link, {
+                fetch(  '/api/' + link, {
                     method: 'PUT',
                     headers: {
                         // 'X-XSRF-TOKEN': csrfToken,
@@ -354,7 +354,7 @@ function updateModeratorList(users) {
         usersListElement.appendChild(userLineElement);
         xMarkElement.addEventListener('click', (event) => {
             event.preventDefault();
-            fetch(url + '/api/deleteModerator', {
+            fetch(  '/api/deleteModerator', {
                 method: 'PUT',
                 headers: {
                     // 'X-XSRF-TOKEN': csrfToken,

@@ -28,7 +28,7 @@ public class ChatController {
 
 
 
-    @CrossOrigin(origins = "http://localhost:8088")
+//    @CrossOrigin(origins = "http://localhost:8088")
 
     @MessageMapping("/chat.sendMessage")
     @SendTo("/topic/public")
