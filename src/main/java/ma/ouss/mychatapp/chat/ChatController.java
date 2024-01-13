@@ -109,10 +109,10 @@ public class ChatController {
     }
     @GetMapping("/login")
     public String login() {
-        return "/login";
+        return "login";
     }
     @GetMapping("/index")
     public String indexx() {
-        return "/index";
+        return "index";
     }
 }
