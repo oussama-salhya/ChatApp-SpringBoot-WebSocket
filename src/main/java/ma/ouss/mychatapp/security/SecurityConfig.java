@@ -45,6 +45,8 @@ public class SecurityConfig{
 
             accountService.addRoleToUser("user1", "USER");
             accountService.addRoleToUser("user2", "USER");
+            accountService.addRoleToUser("user3", "USER");
+            accountService.addRoleToUser("user4", "USER");
             accountService.addRoleToUser("user2", "MODERATOR");
             accountService.addRoleToUser("admin", "USER");
             accountService.addRoleToUser("admin", "MODERATOR");

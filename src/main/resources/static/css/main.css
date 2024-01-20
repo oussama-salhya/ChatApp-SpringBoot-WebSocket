@@ -139,7 +139,7 @@ body {
 .line:hover {
   color: var(--whiteColor);
   background: rgba(207, 218, 225, 0.3);
-  border-bottom-left-radius: var(--radius);
+  /*border-bottom-left-radius: var(--radius);*/
 }
 .line.Person-line .dot {
   display: inline-block;
@@ -294,7 +294,7 @@ li {
 #messageArea {
   /*max-height: 30.5rem;*/
   max-height: 70vh;
-  /* min-height: 2250px; */
+   /*min-height: 2250px;*/
   overflow-y: auto;
 }
 .middle {
@@ -373,4 +373,52 @@ li {
 /* scrollbar-face-color: #4CAF50; */
 /* scrollbar-track-color: #f1f1f1; */
 
-/*css for loading */
+/*css for toggle in small width*/
+/*css for toggle in small width*/
+.toggle-menu {
+  display: none;
+}
+@media screen and (max-width: 759px) {
+  #messageArea {
+    max-height: 65vh;
+  }
+  .dashboard-container {
+    display: none;
+  }
+  .dashboard-moderator {
+    display: none;
+  }
+  .middle {
+    position: relative;
+    /*grid-template-columns: 1fr;*/
+    grid-template-rows: 2.5rem 1fr;
+    overflow: hidden;
+    border-bottom-left-radius: var(--radius);
+    border-bottom-right-radius: var(--radius);
+  }
+  .toggle-menu {
+    display: flex;
+    /* position: absolute; */
+    background: var(--whiteColor);
+    z-index: 999;
+    height: 2.5rem;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+  }
+  .toggle {
+    display: block;
+    font-size: 1.8rem;
+    cursor: pointer;
+  }
+  .dashboard-container.active {
+    display: flex;
+  }
+  .dashboard-moderator.active {
+    display: block;
+  }
+  .conversation-container.active {
+    display: block;
+  }
+}

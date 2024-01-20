@@ -9,8 +9,9 @@ var messageInput = document.querySelector('#message');
 var messageArea = document.querySelector('#messageArea');
 var connectingElement = document.querySelector('.connecting');
 var middle = document.querySelector('.middle');
+const moderatorToggleBtn = document.querySelector('.moderator-toggle');
 var stompClient = null;
-
+let firstTime = true;
 var colors = [
     '#2196F3', '#32c787', '#00BCD4', '#ff5652',
     '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
@@ -26,7 +27,6 @@ let auth = null;
 let role = null;
 let status = null;
 // const csrfToken = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;]*).*$)|^.*$/, '$1');
-// console.log(csrfToken);
 window.addEventListener('DOMContentLoaded', fetchAuth);
 // fetchAuth()
 function fetchAuth() {
@@ -44,7 +44,6 @@ function fetchAuth() {
         })
 }
 function fetchRole(users) {
-    console.log(users)
     let testRole = users.find(user =>user.username===username && user.banned === true);
 
     if (testRole) {
@@ -62,22 +61,27 @@ function fetchRole(users) {
 
     testRole = users.filter(user =>user.username===username &&  user.appRoles.find(roleAP => roleAP.role === 'ADMIN'));
     if (testRole.length === 1) {
+        moderatorToggleBtn.style.display = 'block';
+        // document.querySelector('.middle').style.gridTemplateColumns = '1fr 2fr 1fr';
         role = 'ROLE_ADMIN';
         console.log('User has the authority of ADMIN');
         return;
     }
+    moderatorToggleBtn.style.display = 'none';
     testRole = users.filter(user =>user.username===username && user.appRoles.find(roleAP => roleAP.role === 'MODERATOR'));
     if (testRole.length === 1) {
         role = 'ROLE_MODERATOR';
         console.log('User has the authority of MOD');
-        document.querySelector('.middle').style.gridTemplateColumns = '1fr 2fr';
+
+        // document.querySelector('.middle').style.gridTemplateColumns = '1fr 2fr';
         document.querySelector('.input-group').style.borderBottomRightRadius = '1rem';
         document.querySelector('#chat-page').style.borderBottomRightRadius = '1rem';
         return;
     }
-    document.querySelector('.middle').style.gridTemplateColumns = '1fr 2fr';
+    // document.querySelector('.middle').style.gridTemplateColumns = '1fr 2fr';
     document.querySelector('.input-group').style.borderBottomRightRadius = '1rem';
     document.querySelector('#chat-page').style.borderBottomRightRadius = '1rem';
+
     console.log('User has the authority of USER');
     role = 'ROLE_USER';
 }
@@ -111,12 +115,12 @@ function onConnected() {
     connectingElement.classList.add('hidden');
     fetchUsers();
 
+
+
 }
 function onBanNotificationReceived(payload) {
-    console.log("sss")
     var banNotification = JSON.parse(payload.body);
     // Handle the ban notification, e.g., show a notification to the user
-    console.log('Ban Notification:', banNotification);
 }
 
 function fetchOldMessages() {
@@ -133,7 +137,6 @@ function fetchOldMessages() {
                 });
             });
             fetchedOldmsg = true;
-            console.log(fetchedOldmsg);
             fetchUsers();
         })
         .catch(error => console.error('Error fetching old messages:', error));
@@ -145,8 +148,15 @@ function fetchUsers() {
         .then(response => response.json())
         .then(users => {
             fetchRole(users);
+            if ((role === 'ROLE_MODERATOR' || role === 'ROLE_USER') && window.innerWidth > 759 && firstTime) {
+                firstTime = false;
+                document.querySelector('.middle').style.gridTemplateColumns = '1fr 2fr';
+            }
+            if (window.innerWidth < 759 && firstTime) {
+                firstTime = false;
+                document.querySelector('.middle').style.gridTemplateColumns = '1fr';
+            }
 
-            console.log(users);
             // Process and display the list of users
             const usersListElement = document.querySelector('.dashboard-container .lines');
             // Clear the existing user list
@@ -180,7 +190,6 @@ function fetchUsers() {
                 updateUsersList(users.filter(user => user.banned === true),true);
             }
             if (role === 'ROLE_ADMIN'){
-                console.log(users);
                 const dahsbordModerator = document.querySelector('.dashboard-moderator');
                 const usersListElement = dahsbordModerator.querySelector('.lines');
 
@@ -241,42 +250,47 @@ function updateUsersList(users,isBanned) {
 
         // if (role === 'ROLE_ADMIN' && !isBanned && !user.appRoles.find(role => role.role === 'MODERATOR')) {
         if (role === 'ROLE_ADMIN' && !isBanned ) {
-            console.log('admin--------------------------------------')
-            let xMarkLinkElement = document.createElement('a');
-            let xMarkElement = document.createElement('i');
-            xMarkElement.classList.add('fa-solid', 'fa-plus','hover-icon');
-            xMarkLinkElement.onmouseenter = () => { showMessage('add Moderator') };
-            xMarkLinkElement.onmouseleave = () => { hideMessage() };
-            xMarkLinkElement.appendChild(xMarkElement);
-            userLineElement.appendChild(xMarkLinkElement);
-            xMarkElement.addEventListener('click', (event) => {
-                event.preventDefault();
-                fetch(  '/api/addModerator', {
-                    method: 'PUT',
-                    headers: {
-                        // 'X-XSRF-TOKEN': csrfToken,
-                        'Content-Type': 'application/json'
-                        // '_csrf': csrfToken
-                        // 'X-CSRF-TOKEN': csrfToken  // Include the CSRF token in the headers
-                    },
-                    body: JSON.stringify({ username: user.username })
-                })
-                    .then(response => {
-                        if (response.status === 405) {
-                            window.location.href = './echec';
-                            return
-                        }
-                        response.text();
+            if (!user.appRoles.find(role => role.role === 'MODERATOR')) {
+
+                let xMarkLinkElement = document.createElement('a');
+                let xMarkElement = document.createElement('i');
+                xMarkElement.classList.add('fa-solid', 'fa-plus', 'hover-icon');
+                xMarkLinkElement.onmouseenter = () => {
+                    showMessage('add Moderator')
+                };
+                xMarkLinkElement.onmouseleave = () => {
+                    hideMessage()
+                };
+                xMarkLinkElement.appendChild(xMarkElement);
+                userLineElement.appendChild(xMarkLinkElement);
+                xMarkElement.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    fetch('/api/addModerator', {
+                        method: 'PUT',
+                        headers: {
+                            // 'X-XSRF-TOKEN': csrfToken,
+                            'Content-Type': 'application/json'
+                            // '_csrf': csrfToken
+                            // 'X-CSRF-TOKEN': csrfToken  // Include the CSRF token in the headers
+                        },
+                        body: JSON.stringify({username: user.username})
                     })
-                    .then(data => {
-                        changes(username, 'MOD', user.username)
-                        fetchUsers(users);
-                    })
-                    .catch(error => console.error('Error banning user:', error));
-            });
+                        .then(response => {
+                            if (response.status === 405) {
+                                window.location.href = './echec';
+                                return
+                            }
+                            response.text();
+                        })
+                        .then(data => {
+                            changes(username, 'MOD', user.username)
+                            fetchUsers(users);
+                        })
+                        .catch(error => console.error('Error banning user:', error));
+                });
+            }
         }
         if (role === 'ROLE_ADMIN' || role === 'ROLE_MODERATOR' && !user.appRoles.find(role => role.role === 'ADMIN') ) {
-            console.log('admin or moderator--------------------------------------')
             let xMarkLinkElement = document.createElement('a');
             // xMarkLinkElement.href = `/deleteModerator/${user.username}`; // Set your actual link here
             let xMarkElement = document.createElement('i');
@@ -384,7 +398,6 @@ function onError(error) {
 
 
 function sendMessage(event,isAction,user,action,actionedUser) {
-    console.log(action)
     if (isAction) {
 
         var chatMessage = {
@@ -392,7 +405,6 @@ function sendMessage(event,isAction,user,action,actionedUser) {
             content: actionedUser,
             type: action
         };
-        console.log(chatMessage)
         stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
 
     }else{
@@ -410,7 +422,6 @@ function sendMessage(event,isAction,user,action,actionedUser) {
     }
 }
 function changes(user,action,actionedUser) {
-    console.log('changes')
     sendMessage(null,true,user,action,actionedUser);
     // stompClient.send("/app/chat.changes", {}, JSON.stringify({sender: username, type: 'JOIN'}));
 }
@@ -424,7 +435,6 @@ function onMessageReceived(payload,messageDB) {
     }else{
         message = JSON.parse(payload.body);
     }
-    console.log(fetchedOldmsg)
     var messageElement = document.createElement('li');
     if (message.type ==='MOD'){
         if (fetchedOldmsg) fetchUsers();
@@ -583,3 +593,76 @@ function hideMessage() {
 // document.querySelector(".loader").style.display = "none";
 
 
+// toggle for small screen
+const dashboardToggle = document.querySelector(".dashboard-toggle");
+const dashboardContainer = document.querySelector(".dashboard-container");
+const conversationContainer = document.querySelector(".conversation-container");
+const moderatorToggle = document.querySelector(".moderator-toggle");
+const moderatorContainer = document.querySelector(".dashboard-moderator");
+const conversationToggle = document.querySelector(".conversation-toggle");
+// const messageArea = document.querySelector("#messageArea")
+dashboardToggle.onclick = function () {
+    // if (!dashboardContainer.classList.contains("active"))
+    if (role === 'ROLE_ADMIN'){
+    moderatorContainer.classList.remove("active");
+    moderatorContainer.classList.add("hidden");
+    }
+    dashboardContainer.classList.add("active");
+    conversationContainer.classList.remove("active");
+    conversationContainer.classList.add("hidden");
+};
+moderatorToggle.onclick = function () {
+    moderatorContainer.classList.add("active");
+    // if (!moderatorContainer.classList.contains("active"))
+    dashboardContainer.classList.remove("active");
+    conversationContainer.classList.remove("active");
+    dashboardContainer.classList.add("hidden");
+    conversationContainer.classList.add("hidden");
+};
+conversationToggle.onclick = function () {
+    if (role === 'ROLE_ADMIN'){
+    moderatorContainer.classList.remove("active");
+    moderatorContainer.classList.add("hidden");
+    }
+    // if (!conversationContainer.classList.contains("active"))
+    conversationContainer.classList.add("active");
+    dashboardContainer.classList.remove("active");
+    dashboardContainer.classList.add("hidden");
+};
+// ########################
+const mediaQuery = window.matchMedia('(max-width: 759px)');
+
+mediaQuery.addEventListener('change', (e) => {
+    if (e.matches) {
+        // messageArea.style.maxHeight= '65vh';
+
+        // Apply styles when the screen width is 759px or less
+        document.querySelector('.middle').style.gridTemplateColumns = '1fr';
+        conversationContainer.classList.remove("hidden");
+        conversationContainer.classList.add("active");
+        dashboardContainer.classList.remove("active");
+        dashboardContainer.classList.add("hidden");
+
+        if (role === 'ROLE_ADMIN') {
+            // document.querySelector('.middle').style.gridTemplateColumns = '1fr 2fr 1fr';
+        moderatorContainer.classList.remove("active");
+        moderatorContainer.classList.add("hidden");
+        }
+
+    } else {
+        // messageArea.style.maxHeight= '70vh';
+        fetchUsers();
+        // Remove styles when the screen width is more than 759px
+        dashboardContainer.classList.add("active");
+        conversationContainer.classList.add("active");
+        dashboardContainer.classList.remove("hidden");
+        conversationContainer.classList.remove("hidden");
+
+        if (role === 'ROLE_ADMIN') {
+            document.querySelector('.middle').style.gridTemplateColumns = '1fr 2fr 1fr';
+        moderatorContainer.classList.add("active");
+        moderatorContainer.classList.remove("hidden");
+        }
+        if (role === 'ROLE_MODERATOR' || role === 'ROLE_USER') document.querySelector('.middle').style.gridTemplateColumns = '1fr 2fr';
+    }
+});
