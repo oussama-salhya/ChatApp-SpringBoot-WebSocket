@@ -13,7 +13,6 @@ var middle = document.querySelector('.middle');
 const moderatorToggleBtn = document.querySelector('.moderator-toggle');
 var stompClient = null;
 let firstTime = true;
-let isDemo = false;
 var colors = [
     '#2196F3', '#32c787', '#00BCD4', '#ff5652',
     '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
@@ -62,11 +61,7 @@ function fetchRole(users) {
 
 
     testRole = users.filter(user =>user.username===username &&  user.appRoles.find(roleAP => roleAP.role === 'ADMIN'));
-    let testDemo = users.filter(user =>user.username===username &&  user.appRoles.find(roleAP => roleAP.role === 'DEMO'));
-    if(testDemo.length===1) {
-        isDemo = true;
-        formControl.placeholder = "Demo account, read Only"
-    }
+
     if (testRole.length === 1) {
         moderatorToggleBtn.style.display = 'block';
         // document.querySelector('.middle').style.gridTemplateColumns = '1fr 2fr 1fr';
@@ -429,7 +424,6 @@ function sendMessage(event,isAction,user,action,actionedUser) {
         stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
 
     }else{
-        if (!isDemo){
             var messageContent = messageInput.value.trim();
             if(messageContent && stompClient) {
                 var chatMessage = {
@@ -440,10 +434,6 @@ function sendMessage(event,isAction,user,action,actionedUser) {
                 stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
                 messageInput.value = '';
             }
-        }
-        else{
-        messageInput.value = '';
-        }
         event.preventDefault();
     }
 }

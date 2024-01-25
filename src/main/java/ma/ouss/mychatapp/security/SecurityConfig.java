@@ -36,32 +36,33 @@ public class SecurityConfig{
             accountService.addNewRole("USER");
             accountService.addNewRole("MODERATOR");
             accountService.addNewRole("ADMIN");
-            accountService.addNewRole("DEMO");
 
-            accountService.addNewUser("user1", "oussama", "user1@", "oussama");
-            accountService.addNewUser("user2", "oussama", "user2@","oussama");
-            accountService.addNewUser("user3", "oussama", "user2@","oussama");
-            accountService.addNewUser("user4", "oussama", "user2@","oussama");
-            accountService.addNewUser("admin", "oussama", "admin@", "oussama");
-            accountService.addNewUser("demoAdminUser", "demo1234", "demo@", "demo1234");
-            accountService.addNewUser("demoUser", "demo1234", "demo@", "demo1234");
+            accountService.addNewUser("user1", "demo1234", "user1@", "demo1234");
+            accountService.addNewUser("user2", "demo1234", "user2@","demo1234");
+            accountService.addNewUser("user3", "demo1234", "user2@","demo1234");
+            accountService.addNewUser("user4", "demo1234", "user2@","demo1234");
+            accountService.addNewUser("admin1", "demo1234", "admin@", "demo1234");
+            accountService.addNewUser("admin2", "demo1234", "demo@", "demo1234");
+            accountService.addNewUser("admin3", "demo1234", "demo@", "demo1234");
 
             accountService.addRoleToUser("user1", "USER");
             accountService.addRoleToUser("user2", "USER");
             accountService.addRoleToUser("user3", "USER");
             accountService.addRoleToUser("user4", "USER");
             accountService.addRoleToUser("user2", "MODERATOR");
-            accountService.addRoleToUser("admin", "USER");
-            accountService.addRoleToUser("admin", "MODERATOR");
-            accountService.addRoleToUser("admin", "ADMIN");
 
-            accountService.addRoleToUser("demoUser", "USER");
-            accountService.addRoleToUser("demoUser", "DEMO");
+            accountService.addRoleToUser("admin1", "USER");
+            accountService.addRoleToUser("admin1", "MODERATOR");
+            accountService.addRoleToUser("admin1", "ADMIN");
 
-            accountService.addRoleToUser("demoAdminUser", "USER");
-            accountService.addRoleToUser("demoAdminUser", "MODERATOR");
-            accountService.addRoleToUser("demoAdminUser", "ADMIN");
-            accountService.addRoleToUser("demoAdminUser", "DEMO");
+            accountService.addRoleToUser("admin2", "USER");
+            accountService.addRoleToUser("admin2", "MODERATOR");
+            accountService.addRoleToUser("admin2", "ADMIN");
+
+            accountService.addRoleToUser("admin3", "USER");
+            accountService.addRoleToUser("admin3", "MODERATOR");
+            accountService.addRoleToUser("admin3", "ADMIN");
+
 
         };
     }
