@@ -5,6 +5,7 @@
 var chatPage = document.querySelector('#chat-page');
 var usernameForm = document.querySelector('#usernameForm');
 var messageForm = document.querySelector('#messageForm');
+var formControl = document.querySelector('.form-control');
 var messageInput = document.querySelector('#message');
 var messageArea = document.querySelector('#messageArea');
 var connectingElement = document.querySelector('.connecting');
@@ -12,6 +13,7 @@ var middle = document.querySelector('.middle');
 const moderatorToggleBtn = document.querySelector('.moderator-toggle');
 var stompClient = null;
 let firstTime = true;
+let isDemo = false;
 var colors = [
     '#2196F3', '#32c787', '#00BCD4', '#ff5652',
     '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
@@ -60,6 +62,11 @@ function fetchRole(users) {
 
 
     testRole = users.filter(user =>user.username===username &&  user.appRoles.find(roleAP => roleAP.role === 'ADMIN'));
+    let testDemo = users.filter(user =>user.username===username &&  user.appRoles.find(roleAP => roleAP.role === 'DEMO'));
+    if(testDemo.length===1) {
+        isDemo = true;
+        formControl.placeholder = "Demo account, read Only"
+    }
     if (testRole.length === 1) {
         moderatorToggleBtn.style.display = 'block';
         // document.querySelector('.middle').style.gridTemplateColumns = '1fr 2fr 1fr';
@@ -200,7 +207,7 @@ function fetchUsers() {
                     "                        Admin\n" +
                     "                    </div>\n" +
                     "                </div>";
-                updateModeratorList(users.filter(user => user.appRoles.find(role => role.role === 'ADMIN')));
+                updateModeratorList(users.filter(user => user.appRoles.find(role => role.role === 'ADMIN')),true);
                 let ModHtml = "<div class=\"line team-line\">\n" +
                     "                    <div class=\"title\">\n" +
                     "                        <i class=\"fa-solid fa-user\"></i>\n" +
@@ -290,7 +297,8 @@ function updateUsersList(users,isBanned) {
                 });
             }
         }
-        if (role === 'ROLE_ADMIN' || role === 'ROLE_MODERATOR' && !user.appRoles.find(role => role.role === 'ADMIN') ) {
+
+        if ((role === 'ROLE_ADMIN' || role === 'ROLE_MODERATOR') && !user.appRoles.find(role => role.role === 'ADMIN') ) {
             let xMarkLinkElement = document.createElement('a');
             // xMarkLinkElement.href = `/deleteModerator/${user.username}`; // Set your actual link here
             let xMarkElement = document.createElement('i');
@@ -330,64 +338,77 @@ function updateUsersList(users,isBanned) {
     });
 
 }
-function updateModeratorList(users) {
-    // Assuming you have a DOM element to display the user list
-    const dahsbordModerator = document.querySelector('.dashboard-moderator');
-    const usersListElement = dahsbordModerator.querySelector('.lines');
+function updateModeratorList(users,isAdmin) {
+        // Assuming you have a DOM element to display the user list
+        const dahsbordModerator = document.querySelector('.dashboard-moderator');
+        const usersListElement = dahsbordModerator.querySelector('.lines');
 
-    // Iterate through the fetched users and update the user list
-    users.forEach(user => {
-        if (user.username === username) return;
+        // Iterate through the fetched users and update the user list
+        users.forEach(user => {
+            if (user.username === username) return;
+            if (!isAdmin && user.appRoles.find(role => role.role ==='ADMIN')) return;
 
 
+            const userLineElement = document.createElement('div');
+            userLineElement.classList.add('line', 'Person-line');
 
-        const userLineElement = document.createElement('div');
-        userLineElement.classList.add('line', 'Person-line');
+            const titleElement = document.createElement('div');
+            titleElement.classList.add('title');
 
-        const titleElement = document.createElement('div');
-        titleElement.classList.add('title');
+            const dotElement = document.createElement('i');
+            dotElement.classList.add(user.status === 'online' ? 'online' : 'offline', 'dot');
+            titleElement.appendChild(dotElement);
 
-        const dotElement = document.createElement('i');
-        dotElement.classList.add(user.status === 'online' ? 'online' : 'offline', 'dot');
-        titleElement.appendChild(dotElement);
+            const usernameElement = document.createTextNode(user.username);
+            titleElement.appendChild(usernameElement);
 
-        const usernameElement = document.createTextNode(user.username);
-        titleElement.appendChild(usernameElement);
+            userLineElement.appendChild(titleElement);
+            let xMarkLinkElement = document.createElement('a');
+            let xMarkElement = document.createElement('i');
+            if (!user.appRoles.find(role => role.role === 'ADMIN')) {
 
-        userLineElement.appendChild(titleElement);
-        // usersListElement.appendChild(userLineElement);
-        let xMarkLinkElement = document.createElement('a');
-        // xMarkLinkElement.href = `/deleteModerator/${user.username}`; // Set your actual link here
-        let xMarkElement = document.createElement('i');
-        xMarkElement.classList.add('fa-solid', 'fa-xmark','hover-icon');
-        xMarkLinkElement.onmouseenter = () => { showMessage('delete Moderator') };
-        xMarkLinkElement.onmouseleave = () => { hideMessage() };
+                // usersListElement.appendChild(userLineElement);
+                // xMarkLinkElement.href = `/deleteModerator/${user.username}`; // Set your actual link here
+                xMarkElement.classList.add('fa-solid', 'fa-xmark', 'hover-icon');
+                xMarkLinkElement.onmouseenter = () => {
+                    showMessage('delete Moderator')
+                };
+                xMarkLinkElement.onmouseleave = () => {
+                    hideMessage()
+                };
 
-        xMarkLinkElement.appendChild(xMarkElement);
-        userLineElement.appendChild(xMarkLinkElement);
-        usersListElement.appendChild(userLineElement);
-        xMarkElement.addEventListener('click', (event) => {
-            event.preventDefault();
-            fetch(  '/api/deleteModerator', {
-                method: 'PUT',
-                headers: {
-                    // 'X-XSRF-TOKEN': csrfToken,
-                    'Content-Type': 'application/json'
-                    // '_csrf': csrfToken
-                    // 'X-CSRF-TOKEN': csrfToken  // Include the CSRF token in the headers
-                },
-                body: JSON.stringify({ username: user.username })
-            })
-                .then(response =>{
-                    if (response.status === 405)  {window.location.href = './echec';return}
-                    response.text();})
-                .then(data =>{
-                    changes(username, 'UNMOD', user.username)
-                    fetchUsers();
+                xMarkLinkElement.appendChild(xMarkElement);
+            }
+            userLineElement.appendChild(xMarkLinkElement);
+            // if (user.appRoles.find(role => role.role === 'ADMIN')) return;
+
+            usersListElement.appendChild(userLineElement);
+            xMarkElement.addEventListener('click', (event) => {
+                event.preventDefault();
+                fetch('/api/deleteModerator', {
+                    method: 'PUT',
+                    headers: {
+                        // 'X-XSRF-TOKEN': csrfToken,
+                        'Content-Type': 'application/json'
+                        // '_csrf': csrfToken
+                        // 'X-CSRF-TOKEN': csrfToken  // Include the CSRF token in the headers
+                    },
+                    body: JSON.stringify({username: user.username})
                 })
-                .catch(error => console.error('Error banning user:', error));
+                    .then(response => {
+                        if (response.status === 405) {
+                            window.location.href = './echec';
+                            return
+                        }
+                        response.text();
+                    })
+                    .then(data => {
+                        changes(username, 'UNMOD', user.username)
+                        fetchUsers();
+                    })
+                    .catch(error => console.error('Error banning user:', error));
+            });
         });
-    });
 }
 
 
@@ -408,15 +429,20 @@ function sendMessage(event,isAction,user,action,actionedUser) {
         stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
 
     }else{
-        var messageContent = messageInput.value.trim();
-        if(messageContent && stompClient) {
-            var chatMessage = {
-                sender: username,
-                content: messageInput.value,
-                type: 'CHAT'
-            };
-            stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
-            messageInput.value = '';
+        if (!isDemo){
+            var messageContent = messageInput.value.trim();
+            if(messageContent && stompClient) {
+                var chatMessage = {
+                    sender: username,
+                    content: messageInput.value,
+                    type: 'CHAT'
+                };
+                stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
+                messageInput.value = '';
+            }
+        }
+        else{
+        messageInput.value = '';
         }
         event.preventDefault();
     }

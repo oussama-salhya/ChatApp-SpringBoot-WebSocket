@@ -110,6 +110,11 @@ body {
   border-bottom: 1px solid rgba(207, 218, 225, 0.1);
   border-top: 1px solid rgba(207, 218, 225, 0.1);
 }
+
+.line .title {
+  width: 80%;
+}
+
 .line .title i {
   color: var(--dashColor);
   align-self: center;

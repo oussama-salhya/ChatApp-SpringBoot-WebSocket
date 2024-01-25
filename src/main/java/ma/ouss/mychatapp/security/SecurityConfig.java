@@ -30,18 +30,21 @@ import javax.sql.DataSource;
 public class SecurityConfig{
     private PasswordEncoder passwordEncoder;
     private UserDetailsServiceImpl userDetailsServiceImpl;
-//       @Bean
+       @Bean
     CommandLineRunner commandLineRunnerUserDetails(AccountService accountService) {
         return args -> {
             accountService.addNewRole("USER");
             accountService.addNewRole("MODERATOR");
             accountService.addNewRole("ADMIN");
+            accountService.addNewRole("DEMO");
 
-            accountService.addNewUser("user1", "1234", "user1@", "1234");
-            accountService.addNewUser("user2", "1234", "user2@","1234");
-            accountService.addNewUser("user3", "1234", "user2@","1234");
-            accountService.addNewUser("user4", "1234", "user2@","1234");
-            accountService.addNewUser("admin", "1234", "admin@", "1234");
+            accountService.addNewUser("user1", "oussama", "user1@", "oussama");
+            accountService.addNewUser("user2", "oussama", "user2@","oussama");
+            accountService.addNewUser("user3", "oussama", "user2@","oussama");
+            accountService.addNewUser("user4", "oussama", "user2@","oussama");
+            accountService.addNewUser("admin", "oussama", "admin@", "oussama");
+            accountService.addNewUser("demoAdminUser", "demo1234", "demo@", "demo1234");
+            accountService.addNewUser("demoUser", "demo1234", "demo@", "demo1234");
 
             accountService.addRoleToUser("user1", "USER");
             accountService.addRoleToUser("user2", "USER");
@@ -51,6 +54,14 @@ public class SecurityConfig{
             accountService.addRoleToUser("admin", "USER");
             accountService.addRoleToUser("admin", "MODERATOR");
             accountService.addRoleToUser("admin", "ADMIN");
+
+            accountService.addRoleToUser("demoUser", "USER");
+            accountService.addRoleToUser("demoUser", "DEMO");
+
+            accountService.addRoleToUser("demoAdminUser", "USER");
+            accountService.addRoleToUser("demoAdminUser", "MODERATOR");
+            accountService.addRoleToUser("demoAdminUser", "ADMIN");
+            accountService.addRoleToUser("demoAdminUser", "DEMO");
 
         };
     }
