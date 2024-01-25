@@ -30,7 +30,7 @@ import javax.sql.DataSource;
 public class SecurityConfig{
     private PasswordEncoder passwordEncoder;
     private UserDetailsServiceImpl userDetailsServiceImpl;
-//       @Bean
+       @Bean
     CommandLineRunner commandLineRunnerUserDetails(AccountService accountService) {
         return args -> {
             accountService.addNewRole("USER");
@@ -47,9 +47,9 @@ public class SecurityConfig{
 
             accountService.addRoleToUser("user1", "USER");
             accountService.addRoleToUser("user2", "USER");
+            accountService.addRoleToUser("user2", "MODERATOR");
             accountService.addRoleToUser("user3", "USER");
             accountService.addRoleToUser("user4", "USER");
-            accountService.addRoleToUser("user2", "MODERATOR");
 
             accountService.addRoleToUser("admin1", "USER");
             accountService.addRoleToUser("admin1", "MODERATOR");

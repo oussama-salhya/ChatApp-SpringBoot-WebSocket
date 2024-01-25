@@ -266,6 +266,7 @@ function updateUsersList(users,isBanned) {
                 xMarkLinkElement.appendChild(xMarkElement);
                 userLineElement.appendChild(xMarkLinkElement);
                 xMarkElement.addEventListener('click', (event) => {
+                    xMarkLinkElement.style.display = 'none';
                     event.preventDefault();
                     fetch('/api/addModerator', {
                         method: 'PUT',
@@ -306,6 +307,7 @@ function updateUsersList(users,isBanned) {
             userLineElement.appendChild(xMarkLinkElement);
 
             xMarkElement.addEventListener('click', (event) => {
+                xMarkLinkElement.parentElement.style.display = 'none';
                 event.preventDefault();
                 fetch(  '/api/' + link, {
                     method: 'PUT',
@@ -379,6 +381,7 @@ function updateModeratorList(users,isAdmin) {
 
             usersListElement.appendChild(userLineElement);
             xMarkElement.addEventListener('click', (event) => {
+                xMarkLinkElement.parentElement.style.display = 'none';
                 event.preventDefault();
                 fetch('/api/deleteModerator', {
                     method: 'PUT',
