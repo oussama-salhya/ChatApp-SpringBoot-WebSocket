@@ -18,9 +18,8 @@ CHATOUUS is a real-time chat application built with Java, Spring Boot, and WebSo
 
 ## Demo
 
-Check out the live demo of CHATOUUS at 
-https://drive.google.com/file/d/1TRwwqco-_LsnG1l3bCMzBN_-pf4-MSIL/view?usp=sharing
-or
+Check out the live demo of CHATOUUS :
+
 https://github.com/oussama-salhya/ChatApp-SpringBoot-WebSocket-HTML-CSS-JS/assets/113974700/ab101aa7-202b-48a0-b0d2-1da001002c97
 
 
