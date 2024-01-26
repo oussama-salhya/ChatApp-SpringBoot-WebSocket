@@ -285,13 +285,13 @@ li {
 .dashboard-moderator .line{
   border-bottom: 1px solid rgba(107, 118, 125, 0.5);
 }
-.dashboard-moderator .lines{
+.dashboard-moderator .lines-container{
   /*min-height: 500px;*/
   /*max-height: 500px;*/
   max-height: 70vh;
   overflow: auto;
 }
-.dashboard-container .lines {
+.dashboard-container .lines-container {
   /*min-height: 500px;*/
   max-height: 70vh;
   overflow: auto;
@@ -326,12 +326,12 @@ li {
 }
 
 
-.dashboard-container .lines::-webkit-scrollbar-thumb {
+.dashboard-container .lines-container::-webkit-scrollbar-thumb {
   background-color: var(--backgroundColor); /* Change the color of the scrollbar thumb */
   border-radius: 6px;
 }
 
-.dashboard-container .lines ::-webkit-scrollbar-track {
+.dashboard-container .lines.container ::-webkit-scrollbar-track {
   background-color: var(--dashBackground); /* Change the color of the scrollbar track */
 }
 #messageArea::-webkit-scrollbar-thumb {
@@ -342,12 +342,12 @@ li {
 #messageArea::-webkit-scrollbar-track {
   background-color: var(--whiteColor); /* Change the color of the scrollbar track */
 }
-.dashboard-moderator .lines::-webkit-scrollbar-thumb {
+.dashboard-moderator .lines-container::-webkit-scrollbar-thumb {
   background-color: var(--backgroundColor); /* Change the color of the scrollbar thumb */
   border-radius: 6px;
 }
 
-.dashboard-moderator .lines::-webkit-scrollbar-track {
+.dashboard-moderator .lines-container::-webkit-scrollbar-track {
   background-color: var(--dashColor); /* Change the color of the scrollbar track */
 }
 

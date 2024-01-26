@@ -144,7 +144,7 @@ function fetchOldMessages() {
         .catch(error => console.error('Error fetching old messages:', error));
 }
 
-function fetchUsers() {
+function fetchUsers(action) {
     // Make an API request to fetch the list of users from the server
     fetch(  '/api/users')
         .then(response => response.json())
@@ -159,10 +159,11 @@ function fetchUsers() {
                 document.querySelector('.middle').style.gridTemplateColumns = '1fr';
             }
 
+            const usersListElementMembers = document.querySelector('.dashboard-container .members');
+            if (action==='UNMOD' || action==='unban' || !action){
             // Process and display the list of users
-            const usersListElement = document.querySelector('.dashboard-container .lines');
             // Clear the existing user list
-            usersListElement.innerHTML = "<div class=\"line main-line\">\n" +
+                usersListElementMembers.innerHTML = "<div class=\"line main-line\">\n" +
                 "                    <div class=\"title\">\n" +
                 "                        <i class=\"fa-solid fa-bars\"></i>\n" +
                 "                        Dashboard\n" +
@@ -177,7 +178,10 @@ function fetchUsers() {
 
             updateUsersList(users.filter(user => user.status === 'online' && user.banned === false),false);
             updateUsersList(users.filter(user => user.status === 'offline' && user.banned === false),false);
+            }
+            const usersListElementBannedMembers = document.querySelector('.dashboard-container .bannedMembers');
             if (role === 'ROLE_ADMIN' || role === 'ROLE_MODERATOR' ) {
+                if (action==='ban' || !action){
                 var newHTML = "</div>" +
                     "<div class=\"line team-line\">\n" +
                     "    <div class=\"title\">\n" +
@@ -188,21 +192,27 @@ function fetchUsers() {
                     "</div>";
 
 // Append without overwriting existing content
-                usersListElement.insertAdjacentHTML('beforeend', newHTML);
+//                 usersListElement.insertAdjacentHTML('beforeend', newHTML);
+                    usersListElementBannedMembers.innerHTML= newHTML;
+
                 updateUsersList(users.filter(user => user.banned === true),true);
+                }
             }
+
             if (role === 'ROLE_ADMIN'){
                 const dahsbordModerator = document.querySelector('.dashboard-moderator');
-                const usersListElement = dahsbordModerator.querySelector('.lines');
+                const usersListElementAdmin = dahsbordModerator.querySelector('.admin');
 
                 // Clear the existing user list
-                usersListElement.innerHTML = " <div class=\"line main-line\">\n" +
+                usersListElementAdmin.innerHTML = " <div class=\"line main-line\">\n" +
                     "                    <div class=\"title\">\n" +
                     "                        <i class=\"fa-solid fa-bars\"></i>\n" +
                     "                        Admin\n" +
                     "                    </div>\n" +
                     "                </div>";
                 updateModeratorList(users.filter(user => user.appRoles.find(role => role.role === 'ADMIN')),true);
+                if (action==='MOD' || action==='ban' || !action){
+                const usersListElementMod = dahsbordModerator.querySelector('.moderator');
                 let ModHtml = "<div class=\"line team-line\">\n" +
                     "                    <div class=\"title\">\n" +
                     "                        <i class=\"fa-solid fa-user\"></i>\n" +
@@ -210,8 +220,11 @@ function fetchUsers() {
                     "                    </div>\n" +
                     "                    <!-- <a href=\"\"> <i class=\"fa-solid fa-xmark\"></i> </a> -->\n" +
                     "                </div>";
-                usersListElement.insertAdjacentHTML('beforeend', ModHtml);
+                // usersListElementMod.insertAdjacentHTML('beforeend', ModHtml);
+                usersListElementMod.innerHTML = ModHtml;
+
                 updateModeratorList(users.filter(user => user.appRoles.find(role => role.role === 'MODERATOR')));
+                }
             }
         })
         .catch(error => console.error('Error fetching users:', error));
@@ -221,13 +234,14 @@ function updateUsersList(users,isBanned) {
     let mark= 'fa-xmark';
     let link = 'ban';
     let message = 'ban user';
+    let usersListElement = document.querySelector('.dashboard-container .members');
     if (isBanned){
+     usersListElement = document.querySelector('.dashboard-container .bannedMembers');
         mark = 'fa-check';
         link = 'unban';
         message = 'unban user';
     }
     // Assuming you have a DOM element to display the user list
-    const usersListElement = document.querySelector('.dashboard-container .lines');
     users.forEach(user => {
         if (user.username === username ) return; // Skip the current user
 
@@ -287,7 +301,7 @@ function updateUsersList(users,isBanned) {
                         })
                         .then(data => {
                             changes(username, 'MOD', user.username)
-                            fetchUsers(users);
+                            fetchUsers('MOD');
                         })
                         .catch(error => console.error('Error banning user:', error));
                 });
@@ -326,7 +340,7 @@ function updateUsersList(users,isBanned) {
                     })
                     .then(data =>{
                         changes(username, link.toUpperCase(), user.username)
-                        fetchUsers(users);
+                        fetchUsers(link);
                     })
                     .catch(error => console.error('Error banning user:', error));
             });
@@ -338,8 +352,10 @@ function updateUsersList(users,isBanned) {
 function updateModeratorList(users,isAdmin) {
         // Assuming you have a DOM element to display the user list
         const dahsbordModerator = document.querySelector('.dashboard-moderator');
-        const usersListElement = dahsbordModerator.querySelector('.lines');
-
+        let usersListElement = dahsbordModerator.querySelector('.moderator');
+        if (isAdmin){
+            usersListElement = dahsbordModerator.querySelector('.admin');
+        }
         // Iterate through the fetched users and update the user list
         users.forEach(user => {
             if (user.username === username) return;
@@ -402,7 +418,7 @@ function updateModeratorList(users,isAdmin) {
                     })
                     .then(data => {
                         changes(username, 'UNMOD', user.username)
-                        fetchUsers();
+                        fetchUsers('UNMOD');
                     })
                     .catch(error => console.error('Error banning user:', error));
             });
@@ -456,7 +472,7 @@ function onMessageReceived(payload,messageDB) {
     }
     var messageElement = document.createElement('li');
     if (message.type ==='MOD'){
-        if (fetchedOldmsg) fetchUsers();
+        if (fetchedOldmsg) fetchUsers('unban');
         messageElement.classList.add('event-message');
         message.content = message.content + ' Become a Moderator! at ' + getDate(message.date) + ' by ' + message.sender;
         var textElement = document.createElement('p');
@@ -467,7 +483,7 @@ function onMessageReceived(payload,messageDB) {
 
         messageArea.appendChild(messageElement);
     }else if (message.type ==='UNMOD'){
-        if (fetchedOldmsg) fetchUsers();
+        if (fetchedOldmsg) fetchUsers('unban');
         messageElement.classList.add('event-message');
         message.content = message.content + ' deleted from Moderators! at ' + getDate(message.date) + ' by ' + message.sender;
         var textElement = document.createElement('p');
@@ -478,7 +494,7 @@ function onMessageReceived(payload,messageDB) {
 
         messageArea.appendChild(messageElement);
     }else if (message.type ==='UNBAN'){
-        if (fetchedOldmsg) fetchUsers();
+        if (fetchedOldmsg) fetchUsers('unban');
 
         messageElement.classList.add('event-message');
         message.content = message.content + ' Unbanned! at ' + getDate(message.date) + ' by ' + message.sender;
@@ -490,7 +506,7 @@ function onMessageReceived(payload,messageDB) {
 
         messageArea.appendChild(messageElement);
     }else if (message.type ==='BAN'){
-        if (fetchedOldmsg) fetchUsers();
+        if (fetchedOldmsg) fetchUsers('ban');
 
         messageElement.classList.add('event-message');
         message.content = message.content + ' Banned! at ' + getDate(message.date) + ' by ' + message.sender;
@@ -502,7 +518,7 @@ function onMessageReceived(payload,messageDB) {
 
         messageArea.appendChild(messageElement);
     }else if(message.type === 'JOIN') {
-        if (fetchedOldmsg) fetchUsers();
+        if (fetchedOldmsg) fetchUsers('unban');
         messageElement.classList.add('event-message');
         message.content = message.sender + ' joined! at ' + getDate(message.date);
         var textElement = document.createElement('p');
@@ -514,7 +530,7 @@ function onMessageReceived(payload,messageDB) {
         messageArea.appendChild(messageElement);
 
     } else if (message.type === 'LEAVE') {
-        if (fetchedOldmsg) fetchUsers();
+        if (fetchedOldmsg) fetchUsers('unban');
         messageElement.classList.add('event-message');
         message.content = message.sender + ' left! at ' + getDate(message.date);
         var textElement = document.createElement('p');

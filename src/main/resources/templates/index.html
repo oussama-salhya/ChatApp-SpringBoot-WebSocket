@@ -31,28 +31,35 @@
             <i class="fa-solid fa-bars toggle moderator-toggle"></i>
         </div>
         <div class="dashboard-container" >
-            <div class="lines">
-                <div class="line main-line">
-                    <div class="title">
-                        <i class="fa-solid fa-bars"></i>
-                        Dashboard
-                    </div>
+            <div class="lines-container">
+
+                <div class="lines members">
+    <!--                <div class="line main-line">-->
+    <!--                    <div class="title">-->
+    <!--                        <i class="fa-solid fa-bars"></i>-->
+    <!--                        Dashboard-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--                <div class="line team-line">-->
+    <!--                    <div class="title">-->
+    <!--                        <i class="fa-solid fa-user"></i>-->
+    <!--                        Members-->
+    <!--                    </div>-->
+                        <!-- <a href=""> <i class="fa-solid fa-xmark"></i> </a> -->
+    <!--                </div>-->
+    <!--                <div class="line Person-line">-->
+    <!--                    <div class="title">-->
+    <!--                        <i class="dot offline"></i>-->
+    <!--                        Mouad-->
+    <!--                    </div>-->
+    <!--                    <a href=""> <i class="fa-solid fa-xmark"></i> </a>-->
+    <!--                </div>-->
                 </div>
-                <div class="line team-line">
-                    <div class="title">
-                        <i class="fa-solid fa-user"></i>
-                        Members
-                    </div>
-                    <!-- <a href=""> <i class="fa-solid fa-xmark"></i> </a> -->
+                <div class="lines bannedMembers">
+
                 </div>
-<!--                <div class="line Person-line">-->
-<!--                    <div class="title">-->
-<!--                        <i class="dot offline"></i>-->
-<!--                        Mouad-->
-<!--                    </div>-->
-<!--                    <a href=""> <i class="fa-solid fa-xmark"></i> </a>-->
-<!--                </div>-->
             </div>
+
             <div class="line user-line">
                 <div class="title">
                     <i class="dot status"></i>
@@ -93,21 +100,40 @@
         </div>
         <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}"
              class="dashboard-moderator">
-            <div class="lines">
-                <div class="line main-line">
-                    <div class="title">
-                        <i class="fa-solid fa-bars"></i>
-                        Admin
-                    </div>
-                </div>
-                <div class="line team-line">
-                    <div class="title">
-                        <i class="fa-solid fa-user"></i>
-                        Moderator
-                    </div>
-                    <!-- <a href=""> <i class="fa-solid fa-xmark"></i> </a> -->
-                </div>
+            <div class="lines-container">
+
+            <div class="lines admin">
+<!--                <div class="line main-line">-->
+<!--                    <div class="title">-->
+<!--                        <i class="fa-solid fa-bars"></i>-->
+<!--                        Admin-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="line team-line">-->
+<!--                    <div class="title">-->
+<!--                        <i class="fa-solid fa-user"></i>-->
+<!--                        Moderator-->
+<!--                    </div>-->
+<!--                    &lt;!&ndash; <a href=""> <i class="fa-solid fa-xmark"></i> </a> &ndash;&gt;-->
+<!--                </div>-->
             </div>
+            <div class="lines moderator">
+<!--                <div class="line main-line">-->
+<!--                    <div class="title">-->
+<!--                        <i class="fa-solid fa-bars"></i>-->
+<!--                        Admin-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="line team-line">-->
+<!--                    <div class="title">-->
+<!--                        <i class="fa-solid fa-user"></i>-->
+<!--                        Moderator-->
+<!--                    </div>-->
+<!--                    &lt;!&ndash; <a href=""> <i class="fa-solid fa-xmark"></i> </a> &ndash;&gt;-->
+<!--                </div>-->
+            </div>
+            </div>
+
         </div>
     </div>
 </div>
