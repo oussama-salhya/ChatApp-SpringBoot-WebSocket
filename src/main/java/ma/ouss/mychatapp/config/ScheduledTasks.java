@@ -15,7 +15,7 @@ public class ScheduledTasks {
         this.logRepository = logRepository;
     }
 
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(cron = "0 0/10 * * * *")
     public void cleanupDatabase() {
         System.out.println("cleaniiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiing");
         logRepository.deleteAll();
