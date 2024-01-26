@@ -27,7 +27,8 @@ public class ChatMessage {
     @ManyToOne
     private AppUser sender;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "log_id")
     private Log log;
 
 }
