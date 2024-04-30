@@ -5,6 +5,12 @@
 
 CHATOUUS is a real-time chat application built with Java, Spring Boot, and WebSocket technology. It offers seamless communication, user management, and efficient moderation features.
 
+## Demo
+
+Check out the live demo of CHATOUUS :
+
+https://github.com/oussama-salhya/ChatApp-SpringBoot-WebSocket-HTML-CSS-JS/assets/113974700/ab101aa7-202b-48a0-b0d2-1da001002c97
+
 ## Key Features
 
 - **Real-Time Messaging:** Experience instant communication with WebSocket integration.
@@ -16,12 +22,19 @@ CHATOUUS is a real-time chat application built with Java, Spring Boot, and WebSo
 - **Responsive Design:** User-friendly interface with a responsive design for seamless multi-device experience.
 - **Innovative Technologies:** Built with Spring Boot and WebSocket for a cutting-edge chat experience.
 
-## Demo
+🔗 **Check it out:**
+https://chat-ouus.onrender.com
 
-Check out the live demo of CHATOUUS :
+- Admin Demo Account:
 
-https://github.com/oussama-salhya/ChatApp-SpringBoot-WebSocket-HTML-CSS-JS/assets/113974700/ab101aa7-202b-48a0-b0d2-1da001002c97
+Username: admin1
 
+Password: demo1234
+- User Demo Account:
+
+Username: user1
+
+Password: demo1234
 
 ## Getting Started
 
