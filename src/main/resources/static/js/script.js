@@ -53,6 +53,7 @@ function fetchRole(users) {
         document.querySelector('.line.user-line .dot').classList.remove('online');
         document.querySelector('.line.user-line .dot').classList.add('baned');
     }else{
+        status = 'online';
         document.querySelector('.line.user-line .dot').classList.add('online');
         document.querySelector('.line.user-line .dot').classList.remove('baned');
         document.querySelector('.input-group').style.display = 'flex';
@@ -160,7 +161,7 @@ function fetchUsers(action) {
             }
 
             const usersListElementMembers = document.querySelector('.dashboard-container .members');
-            if (action==='UNMOD' || action==='unban' || !action){
+            if (action==='UNMOD' || action==='unban' ||  action==='ban' || !action){
             // Process and display the list of users
             // Clear the existing user list
                 usersListElementMembers.innerHTML = "<div class=\"line main-line\">\n" +
@@ -181,7 +182,7 @@ function fetchUsers(action) {
             }
             const usersListElementBannedMembers = document.querySelector('.dashboard-container .bannedMembers');
             if (role === 'ROLE_ADMIN' || role === 'ROLE_MODERATOR' ) {
-                if (action==='ban' || !action){
+                if (action==='ban'|| action==='unban' || !action){
                 var newHTML = "</div>" +
                     "<div class=\"line team-line\">\n" +
                     "    <div class=\"title\">\n" +
@@ -308,17 +309,16 @@ function updateUsersList(users,isBanned) {
             }
         }
 
-        if ((role === 'ROLE_ADMIN' || role === 'ROLE_MODERATOR') && !user.appRoles.find(role => role.role === 'ADMIN') ) {
+        if ((role === 'ROLE_ADMIN' || role === 'ROLE_MODERATOR')&& status!=="baned" && !user.appRoles.find(role => role.role === 'ADMIN') ) {
             let xMarkLinkElement = document.createElement('a');
-            // xMarkLinkElement.href = `/deleteModerator/${user.username}`; // Set your actual link here
             let xMarkElement = document.createElement('i');
-
+            console.log('status',status);
             xMarkElement.classList.add('fa-solid', mark,'hover-icon');
 
             xMarkLinkElement.onmouseenter = () => { showMessage(message) };
             xMarkLinkElement.onmouseleave = () => { hideMessage() };
-            xMarkLinkElement.appendChild(xMarkElement);
-            userLineElement.appendChild(xMarkLinkElement);
+                 xMarkLinkElement.appendChild(xMarkElement);
+                 userLineElement.appendChild(xMarkLinkElement);
 
             xMarkElement.addEventListener('click', (event) => {
                 xMarkLinkElement.parentElement.style.display = 'none';

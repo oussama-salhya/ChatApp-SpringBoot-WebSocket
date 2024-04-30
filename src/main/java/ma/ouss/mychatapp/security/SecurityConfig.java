@@ -33,6 +33,8 @@ public class SecurityConfig{
        @Bean
     CommandLineRunner commandLineRunnerUserDetails(AccountService accountService) {
         return args -> {
+            if (accountService.loadUserByUsername("user1") == null) {
+
             accountService.addNewRole("USER");
             accountService.addNewRole("MODERATOR");
             accountService.addNewRole("ADMIN");
@@ -62,6 +64,7 @@ public class SecurityConfig{
             accountService.addRoleToUser("admin3", "USER");
             accountService.addRoleToUser("admin3", "MODERATOR");
             accountService.addRoleToUser("admin3", "ADMIN");
+            }
 
 
         };
