@@ -1,13 +1,12 @@
-
-# CHATOUUS - Real-Time Chat Application
+# ComfyChat - Real-Time Chat Application
 
 ## Overview
 
-CHATOUUS is a real-time chat application built with Java, Spring Boot, and WebSocket technology. It offers seamless communication, user management, and efficient moderation features.
+ComfyChat is a real-time chat application built with Java, Spring Boot, and WebSocket technology. It offers seamless communication, user management, and efficient moderation features.
 
 ## Demo
 
-Check out the live demo of CHATOUUS :
+Check out the live demo of ComfyChat :
 
 https://github.com/oussama-salhya/ChatApp-SpringBoot-WebSocket-HTML-CSS-JS/assets/113974700/ab101aa7-202b-48a0-b0d2-1da001002c97
 
@@ -30,6 +29,7 @@ https://chat-ouus.onrender.com
 Username: admin1
 
 Password: demo1234
+
 - User Demo Account:
 
 Username: user1
