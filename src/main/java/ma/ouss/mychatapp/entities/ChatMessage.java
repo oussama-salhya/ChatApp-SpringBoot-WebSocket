@@ -13,6 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "comfychat_chat_message")
 public class ChatMessage {
 
     @Id
